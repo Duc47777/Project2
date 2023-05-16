@@ -90,7 +90,7 @@ int Game::game_state()
     return -1;
 }
 
-
+/*
 int Game::bot(int step) //how bot plays
 {
     int score = game_state();
@@ -107,6 +107,47 @@ int Game::bot(int step) //how bot plays
     if (turn == 1) score = -24; else score = 24;
     for (int i = 0;i < N;i++)
         for (int j = 0; j < N;j++)
+            if (board[i][j] == -1)
+            {
+                board[i][j] = turn;
+                test = bot(step + 1);
+                if (turn == 1)
+                {
+                    if (test > score)//kiểm tra giá trị thử của bot có tốt hơn không
+                    {
+                        score = test;
+                        if (step == 1) { x = i; y = j; }
+                    }
+                }
+                else
+                {
+                    if (test < score)//kiểm tra giá trị thử của người chơi
+                    {
+                        score = test;
+                        if (step == 0) { x = i; y = j; }
+                    }
+                }
+                board[i][j] = -1;
+            }
+    return score;
+}*/
+
+int Game::bot(int step) //how bot plays
+{
+    int score = game_state();
+    if (score != -1 || step == 4)
+    {
+        if (score == 1) score = N*N -1 - step - 1;
+        else if (score == 0) score = step - 1 - (N*N-1);
+        else score = 0;
+        return score;
+    }
+    int turn = step % 2;
+
+    int test;
+    if (turn == 1) score = -(N*N-1); else score = N*N-1;
+    for (int i = 0; i < N; i++)
+        for (int j = 0; j < N; j++)
             if (board[i][j] == -1)
             {
                 board[i][j] = turn;
