@@ -129,21 +129,23 @@ void Game::run()
         {
             if (e.type == SDL_QUIT) quit = true;
             
-            if (played || (e.type == SDL_MOUSEBUTTONDOWN && mouseX >= 170 && mouseX <= 327 && mouseY >= 277 && mouseY <= 320))
+            if (played || (e.type == SDL_MOUSEBUTTONDOWN && mouseX >= 168 && mouseX <= 332 && mouseY >= 270 && mouseY <= 334))
             {
                 played = true;
+                
                 if (restart)
                 {
                     init();
                     e.type = NULL;
                 }
+
                 if (winner == -1 && player == 0 && e.type == SDL_MOUSEBUTTONDOWN && e.button.clicks == 1)
                 {
                     updateMouse(mouseX, mouseY);
                     e.type = NULL;
                 }
 
-                if (winner != -1 && e.type == SDL_MOUSEBUTTONDOWN && mouseX >= 173 && mouseX <= 329 && mouseY >= 279 && mouseY <= 324)
+                if (winner != -1 && e.type == SDL_MOUSEBUTTONDOWN && mouseX >= 165 && mouseX <= 332 && mouseY >= 270 && mouseY <= 334)
                 {
                     restart = true;
                 }
@@ -159,7 +161,7 @@ void Game::run()
 
         if (e.type == SDL_MOUSEMOTION) {
             mouseX = e.button.x;
-            mouseY = e.button.y;
+            mouseY = e.button.y;    
         }
     }
 
