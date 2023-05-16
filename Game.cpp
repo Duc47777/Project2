@@ -37,25 +37,24 @@ int Game::game_state()
         for (int j = 0; j < N; j++)
             if (board[i][j] == -1) draw = false;
     if (draw) return 2;
-                               
+
     for (int i = 0; i < N; i++)
     {
-        
-        bool checkcol = 1;
-        bool checkrow = 1;
+        bool checkrow = true;
+        bool checkcol = true;
 
         for (int j = 0; j < N; j++)
         {
             // CHECK HANG NGANG
             if (board[i][j] != board[i][0])
             {
-                checkrow = 0;
+                checkrow = false;
             }
 
             //CHECK HANG DOC
             if (board[j][i] != board[0][i])
             {
-                checkcol = 0;
+                checkcol = false;
             }
         }
 
@@ -65,14 +64,14 @@ int Game::game_state()
 
     }
     //hàng chéo
-    bool checkcheoTayBacDongNam = 1;
+    bool checkcheoTayBacDongNam = true;
     /*
     0
       0
         0
           0
     */
-    bool checkcheoDongBacTayNam = 1;
+    bool checkcheoDongBacTayNam = true;
     /*
                 0
             0
@@ -81,15 +80,16 @@ int Game::game_state()
     */
     for (int i = 0; i < N; i++)
     {
-        if (board[i][i] != board[0][0]) checkcheoTayBacDongNam = 0;
-        if (board[i][N - 1 - i] != board[0][N - 1]) checkcheoDongBacTayNam = 0;
+        if (board[i][i] != board[0][0]) checkcheoTayBacDongNam = false;
+        if (board[i][N - 1 - i] != board[0][N - 1]) checkcheoDongBacTayNam = false;
     }
     if (checkcheoTayBacDongNam)  return board[0][0];
     if (checkcheoDongBacTayNam)  return board[0][N - 1];
-   
+
 
     return -1;
 }
+
 
 int Game::bot(int step) //how bot plays
 {
@@ -163,21 +163,23 @@ void Game::run()
         {
             if (e.type == SDL_QUIT) quit = true;
             
-            if (played || (e.type == SDL_MOUSEBUTTONDOWN && mouseX >= 170 && mouseX <= 327 && mouseY >= 277 && mouseY <= 320))
+            if (played || (e.type == SDL_MOUSEBUTTONDOWN && mouseX >= 168 && mouseX <= 332 && mouseY >= 270 && mouseY <= 334))
             {
                 played = true;
+                
                 if (restart)
                 {
                     init();
                     e.type = NULL;
                 }
+
                 if (winner == -1 && player == 0 && e.type == SDL_MOUSEBUTTONDOWN && e.button.clicks == 1)
                 {
                     updateMouse(mouseX, mouseY);
                     e.type = NULL;
                 }
 
-                if (winner != -1 && e.type == SDL_MOUSEBUTTONDOWN && mouseX >= 173 && mouseX <= 329 && mouseY >= 279 && mouseY <= 324)
+                if (winner != -1 && e.type == SDL_MOUSEBUTTONDOWN && mouseX >= 165 && mouseX <= 332 && mouseY >= 270 && mouseY <= 334)
                 {
                     restart = true;
                 }
@@ -193,7 +195,7 @@ void Game::run()
 
         if (e.type == SDL_MOUSEMOTION) {
             mouseX = e.button.x;
-            mouseY = e.button.y;
+            mouseY = e.button.y;    
         }
     }
 
