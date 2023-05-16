@@ -37,22 +37,56 @@ int Game::game_state()
         for (int j = 0; j < N; j++)
             if (board[i][j] == -1) draw = false;
     if (draw) return 2;
-    //hàng ngang
+                               
     for (int i = 0; i < N; i++)
-        if (board[i][1] != -1 && board[i][1] == board[i][2] && board[i][1] == board[i][3] && board[i][0] == board[i][1] && board[i][4] == board[i][1])
-            return board[i][0];
-    //cột dọc
-    for (int i = 0; i < N; i++)
-        if (board[1][i] != -1 && board[1][i] == board[2][i] && board[1][i] == board[3][i] && board[0][i] == board[1][i] && board[4][i] == board[1][i])
-            return board[0][i];
-    //hàng chéo
-    if (board[0][0] == board[1][1] && board[0][0] == board[2][2] && board[0][0] == board[3][3] && board[0][0] == board[4][4] && board[0][0] != -1) {
-        return board[0][0];
-    }
-    else if (board[0][4] == board[1][3] && board[0][4] == board[2][2] && board[0][4] == board[3][1] && board[0][4] == board[4][0] && board[0][4] != -1) {
-        return board[0][4];
-    }
+    {
+        
+        bool checkcol = 1;
+        bool checkrow = 1;
 
+        for (int j = 0; j < N; j++)
+        {
+            // CHECK HANG NGANG
+            if (board[i][j] != board[i][0])
+            {
+                checkrow = 0;
+            }
+
+            //CHECK HANG DOC
+            if (board[j][i] != board[0][i])
+            {
+                checkcol = 0;
+            }
+        }
+
+        if (checkrow) return board[i][0];
+
+        if (checkcol) return board[0][i];
+
+    }
+    //hàng chéo
+    bool checkcheoTayBacDongNam = 1;
+    /*
+    0
+      0
+        0
+          0
+    */
+    bool checkcheoDongBacTayNam = 1;
+    /*
+                0
+            0
+        0
+    0
+    */
+    for (int i = 0; i < N; i++)
+    {
+        if (board[i][i] != board[0][0]) checkcheoTayBacDongNam = 0;
+        if (board[i][N - 1 - i] != board[0][N - 1]) checkcheoDongBacTayNam = 0;
+    }
+    if (checkcheoTayBacDongNam)  return board[0][0];
+    if (checkcheoDongBacTayNam)  return board[0][N - 1];
+   
 
     return -1;
 }
