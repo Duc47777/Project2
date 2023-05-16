@@ -45,14 +45,14 @@ int Game::game_state()
 
         for (int j = 0; j < N; j++)
         {
-            // CHECK HANG NGANG
-            if (board[i][j] != board[i][0])
+            // check hàng ngang
+            if (board[i][j] != board[i][0] && board[i][0] != -1)
             {
                 checkrow = false;
             }
 
-            //CHECK HANG DOC
-            if (board[j][i] != board[0][i])
+            // check hàng dọc
+            if (board[j][i] != board[0][i] && board[0][i] != -1)
             {
                 checkcol = false;
             }
@@ -73,14 +73,14 @@ int Game::game_state()
     */
     bool checkcheoDongBacTayNam = true;
     /*
-                0
-            0
+          0
         0
+      0
     0
     */
     for (int i = 0; i < N; i++)
     {
-        if (board[i][i] != board[0][0]) checkcheoTayBacDongNam = false;
+        if (board[i][i] != board[0][0] && board[0][0] != -1) checkcheoTayBacDongNam = false;
         if (board[i][N - 1 - i] != board[0][N - 1]) checkcheoDongBacTayNam = false;
     }
     if (checkcheoTayBacDongNam)  return board[0][0];
