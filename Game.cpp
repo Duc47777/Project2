@@ -21,8 +21,8 @@ void Game::init()
 
 void Game::updateMouse(int mouseX, int mouseY)
 {
-    int X = (mouseX - 105) / 70;
-    int Y = (mouseY - 98) / 70;
+    int X = (mouseX - 106) / 70;
+    int Y = (mouseY - 100) / 70;
     if (X >= 0 && Y >= 0 && X < col && Y < row)
     {
         selected[0] = X;
@@ -41,19 +41,23 @@ int Game::game_state()
 
     for (int i = 0; i < row; i++)
     {
-        for (int j = 0; j <= (col - 1) - 4; j++)
+        for (int j = 0; j < col  - 4; j++)
         {
             // check hàng ngang
-            bool checkrow = true;
-            for (int k = j + 1; k <= j + 4; k++)
+            if (board[i][j] != -1 )
             {
-                if (board[i][k] != board[i][j])
+                bool checkrow = true;
+                for (int k = j + 1; k < j + 5; k++)
                 {
-                    checkrow = false;
-                    break;
+                    if (board[i][k] != board[i][j])
+                    {
+                        checkrow = false;
+                        break;
+                    }
                 }
+                if (checkrow) return board[i][j];
             }
-            if (checkrow) return board[i][j];
+            
         }
     }
 
@@ -63,15 +67,18 @@ int Game::game_state()
         {
             // Check hàng dọc
             bool checkcol = true;
-            for (int k = i + 1; k <= i + 4; k++)
+            if (board[i][j] != -1)
             {
-                if (board[k][j] != board[i][j])
+                for (int k = i + 1; k <= i + 4; k++)
                 {
-                    checkcol = false;
-                    break;
+                    if (board[k][j] != board[i][j])
+                    {
+                        checkcol = false;
+                        break;
+                    }
                 }
+                if (checkcol) return board[i][j];
             }
-            if (checkcol) return board[i][j];
         }
     }
 
@@ -82,16 +89,20 @@ int Game::game_state()
         for (int j = 0; j <= (col - 1) - 4; j++)
         {
             // Kiểm tra hàng chéo từ trên bên trái xuống dưới bên phải
-            bool checkYbangX = true;
-            for (int k = 1; k <= 4; k++)
+            if (board[i][j] != -1)
             {
-                if (board[i + k][j + k] != board[i][j])
+                bool checkYbangX = true;
+                for (int k = 1; k <= 4; k++)
                 {
-                    checkYbangX = false;
-                    break;
+                    if (board[i + k][j + k] != board[i][j])
+                    {
+                        checkYbangX = false;
+                        break;
+                    }
                 }
+                if (checkYbangX) return board[i][j];
+
             }
-            if (checkYbangX) return board[i][j];
         }
     }
 
@@ -100,16 +111,19 @@ int Game::game_state()
         for (int j = 4; j < col; j++)
         {
             // Kiểm tra hàng chéo ngược từ trên bên phải xuống dưới bên trái
-            bool checkYbangtruX = true;
-            for (int k = 1; k <= 4; k++)
+            if (board[i][j] != -1)
             {
-                if (board[i + k][j - k] != board[i][j])
+                bool checkYbangtruX = true;
+                for (int k = 1; k <= 4; k++)
                 {
-                    checkYbangtruX = false;
-                    break;
+                    if (board[i + k][j - k] != board[i][j])
+                    {
+                        checkYbangtruX = false;
+                        break;
+                    }
                 }
+                if (checkYbangtruX) return board[i][j];
             }
-            if (checkYbangtruX) return board[i][j];
         }
     }
 
@@ -245,7 +259,7 @@ void Game::run()
                 if (mouseX >= 465 && mouseX <= 775 && mouseY >= 615 && mouseY <= 690)
                     setMode(3);
             }
-            cout << mode << endl;
+            
             if (played || mode)
             {
                 played = true;
@@ -255,14 +269,14 @@ void Game::run()
                     init();
                     e.type = NULL;
                 }
-                cout << mode << endl;
+                
                 bool pushedRestart = 0;
-                if (winner != -1 && e.type == SDL_MOUSEBUTTONDOWN)
+                if (winner != -1 && e.type == SDL_MOUSEBUTTONDOWN )
                 {
 
                     mouseX = e.button.x;
                     mouseY = e.button.y;
-                    if (mouseX >= 467 && mouseX <= 776 && mouseY >= 462 && mouseY <= 540)
+                    if ((mouseX >= 467 && mouseX <= 776 && mouseY >= 462 && mouseY <= 540 ))
                     {
                         pushedRestart = 1;
                     }
@@ -274,16 +288,16 @@ void Game::run()
 
                 if (winner == -1)// nhan vao input tu chuot trong luc choi game
                 {
-                        if (mode == 1)
+                    if (mode == 1)
+                    {
+                        if (winner == -1 && played)
                         {
-                            if (winner == -1 && played)
+                            if (player == 0)
                             {
-                                if (player == 0)
+                                if (e.type == SDL_MOUSEBUTTONDOWN)
                                 {
-                                    if (e.type == SDL_MOUSEBUTTONDOWN)
-                                    {
-                                        mouseX = e.button.x;
-                                        mouseY = e.button.y;
+                                    mouseX = e.button.x;
+                                    mouseY = e.button.y;
                                     updateMouse(mouseX, mouseY);
 
                                     if (selected[0] != -1)
@@ -324,23 +338,23 @@ void Game::run()
                             mouseX = e.button.x;
                             mouseY = e.button.y;
                         
-                        updateMouse(mouseX, mouseY);
+                            updateMouse(mouseX, mouseY);
 
-                        if (selected[0] != -1)
-                        {
-                            int Y = selected[0];
-                            int X = selected[1];
-                            selected[0] = -1;
-                            if (board[X][Y] == -1)
+                            if (selected[0] != -1)
                             {
-                                board[X][Y] = player;
-                                player = 1 - player;
+                                int Y = selected[0];
+                                int X = selected[1];
+                                selected[0] = -1;
+                                if (board[X][Y] == -1)
+                                {
+                                    board[X][Y] = player;
+                                    player = 1 - player;
+                                }
                             }
-                        }
                         }
                         renderboard();
                         winner = game_state();
-
+                        
                     }
                     if (mode == 3)
                     {
