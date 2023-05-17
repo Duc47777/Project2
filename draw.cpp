@@ -26,56 +26,80 @@ void Init()
 				SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 		}
 	}
-	surface[0] = IMG_Load("Image/background.png");
+	surface[0] = IMG_Load("NewImage/Menu0.png");
 	texture[0] = SDL_CreateTextureFromSurface(renderer, surface[0]);
 
-	surface[1] = IMG_Load("Image/icon_x.png");
+	surface[1] = IMG_Load("NewImage/MenuBot.png");
 	texture[1] = SDL_CreateTextureFromSurface(renderer, surface[1]);
 
-	surface[2] = IMG_Load("Image/icon_o.png");
+	surface[2] = IMG_Load("NewImage/MenuPvP.png");
 	texture[2] = SDL_CreateTextureFromSurface(renderer, surface[2]);
 
-	surface[3] = IMG_Load("Image/start.png");
+	surface[3] = IMG_Load("NewImage/MenuQuit.png");
 	texture[3] = SDL_CreateTextureFromSurface(renderer, surface[3]);
 
-	surface[4] = IMG_Load("Image/state_player_win.png");
+	surface[4] = IMG_Load("NewImage/Board10x15.png");
 	texture[4] = SDL_CreateTextureFromSurface(renderer, surface[4]);
 
-	surface[5] = IMG_Load("Image/state_bot_win.png");
+	surface[5] = IMG_Load("NewImage/image_X.png");
 	texture[5] = SDL_CreateTextureFromSurface(renderer, surface[5]);
 
-	surface[6] = IMG_Load("Image/state_tie.png");
+	surface[6] = IMG_Load("NewImage/image_O.png");
 	texture[6] = SDL_CreateTextureFromSurface(renderer, surface[6]);
 
+	surface[7] = IMG_Load("NewImage/X_win.png");
+	texture[7] = SDL_CreateTextureFromSurface(renderer, surface[7]);
+
+	surface[8] = IMG_Load("NewImage/O_win.png");
+	texture[8] = SDL_CreateTextureFromSurface(renderer, surface[8]);
+
+	surface[9] = IMG_Load("NewImage/Draw_win.png");
+	texture[9] = SDL_CreateTextureFromSurface(renderer, surface[9]);
+
+
+	/*
+	0: menu khong co gi
+	1: menu sang Bot
+	2: menu sang PvP
+	3: menu sang Quit
+	4: board 15*10
+	5: X
+	6: O
+	7: X win
+	8: O win
+	9: Draw
+	*/
 }
 
 void loadMedia(int id, int x, int y)
 {
-	SDL_Rect dest = { x, y,surface[id]->w,surface[id]->h };
+	SDL_Rect dest = { x, y,SCREEN_WIDTH,SCREEN_HEIGHT};
 
-	SDL_RenderCopy(renderer, texture[id], NULL, &dest);
+	SDL_RenderCopy(renderer, texture[id], nullptr, &dest);
 }
 
 void game_start()
 {
-	loadMedia(3, 0, 0);
+	loadMedia(0, 0, 0); // render man hinh Menu
 	SDL_RenderPresent(renderer);
 }
 
 void game_over(int winner)
 {
-	loadMedia(winner + 4, 0, 0);
+	loadMedia(winner + 7, 0, 0); // 0 la X win, 1 la O win, 2 la  +7 de render anh X hoac O win
 	SDL_RenderPresent(renderer);
 }
 
-void Game::render()
+void Game::render()//ve X hoac O len man hinh
 {
-	loadMedia(0, 0, 0);
-	for (int i = 0; i < N; i++)
-		for (int j = 0; j < N; j++)
+	loadMedia(4, 0, 0);
+	for (int i = 0; i < row; i++)
+		for (int j = 0; j < col; j++)
 			if (board[i][j] != -1)
-				loadMedia(board[i][j] + 1, i * 100 + 10, j * 100 + 10);
-	SDL_RenderPresent(renderer);
+				loadMedia(board[i][j] + 5, i * 70 + 82, j * 70 + 96);
+	SDL_RenderPresent(renderer);//tinh sau
+	///////////////////////////////////////////////////
+	///////////////////////////////////////////////////
 }
 
 void close()
@@ -85,6 +109,7 @@ void close()
 
 	for (int i = 0; i < 10;i++)
 		SDL_FreeSurface(surface[i]);
+
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
 	window = NULL;
