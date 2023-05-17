@@ -23,7 +23,7 @@ public:
     void run();
     void setMode(int m);
     void botPlay(int player);
-    int minimax(int depth, bool maximizingPlayer);
+    int minimax(int depth,int alpha, int beta, bool maximizingPlayer);
 private:
     void updateMouse(int mouseX, int mouseY);
     void update();

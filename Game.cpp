@@ -210,7 +210,7 @@ void Game::botPlay(int player)
                     board[i][j] = player;
 
                     // Tính điểm cho nước đi này
-                    int score = minimax(0, false);
+                    int score = minimax(0,-9999,9999, false);
 
                     // Lưu lại nước đi có điểm tốt nhất
                     if (score > bestScore) {
@@ -231,74 +231,81 @@ void Game::botPlay(int player)
         }
 }
 
-int Game::minimax(int depth, bool maximizingPlayer)
-{
-    // Hàm Minimax để tìm nước đi tốt nhất
-    
-        int score = game_state();
+// Hàm Minimax với cắt tỉa Alpha-Beta để tìm nước đi tốt nhất
+int Game::minimax(int depth, int alpha, int beta, bool maximizingPlayer) {
+    int score = game_state();
 
-        // Trả về điểm nếu trạng thái hiện tại là trạng thái kết thúc
-        if (score != 0) {
-            return score;
-        }
+    // Trả về điểm nếu trạng thái hiện tại là trạng thái kết thúc
+    if (score != 0) {
+        return score;
+    }
 
-        // Trường hợp hòa cờ
-        if (depth >= col * row) {
-            return 0;
-        }
+    // Trường hợp hòa cờ
+    if (depth >= col * row) {
+        return 0;
+    }
 
-        if (maximizingPlayer) {
-            int bestScore = INT_MIN;
+    if (maximizingPlayer) {
+        int bestScore = INT_MIN;
 
-            // Duyệt qua tất cả các ô trống trên bàn cờ
-            for (int i = 0; i < row; i++) {
-                for (int j = 0; j < col; j++) {
-                    if (board[i][j] == -1) {
-                        // Thử đánh vào ô trống này
-                        board[i][j] = 1;
+        // Duyệt qua tất cả các ô trống trên bàn cờ
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                if (board[i][j] == -1) {
+                    // Thử đánh vào ô trống này
+                    board[i][j] = 1;
 
-                        // Tính điểm cho nước đi này
-                        int currentScore = minimax(depth + 1, false);
+                    // Tính điểm cho nước đi này
+                    int currentScore = minimax(depth + 1, alpha, beta, false);
 
-                        // Cập nhật điểm tốt nhất
-                        bestScore = max(bestScore, currentScore);
+                    // Cập nhật điểm tốt nhất
+                    bestScore = max(bestScore, currentScore);
+                    alpha = max(alpha, bestScore);
 
-                        // Đặt lại giá trị của ô sau khi thử nước đi
-                        board[i][j] = -1;
+                    // Đặt lại giá trị của ô sau khi thử nước đi
+                    board[i][j] = -1;
+
+                    // Cắt tỉa Beta
+                    if (beta <= alpha) {
+                        break;
                     }
                 }
             }
-
-            return bestScore;
         }
-        else {
-            int bestScore = INT_MAX;
 
-            // Duyệt qua tất cả các ô trống trên bàn cờ
-            for (int i = 0; i < row; i++) {
-                for (int j = 0; j < col; j++) {
-                    if (board[i][j] == -1) {
-                        // Thử đánh vào ô trống này
-                        board[i][j] = 0;
+        return bestScore;
+    }
+    else {
+        int bestScore = INT_MAX;
 
-                        // Tính điểm cho nước đi này
-                        int currentScore = minimax(depth + 1, true);
+        // Duyệt qua tất cả các ô trống trên bàn cờ
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                if (board[i][j] == -1) {
+                    // Thử đánh vào ô trống này
+                    board[i][j] = 0;
 
-                        // Cập nhật điểm tốt nhất
-                        bestScore = min(bestScore, currentScore);
+                    // Tính điểm cho nước đi này
+                    int currentScore = minimax(depth + 1, alpha, beta, true);
 
-                        // Đặt lại giá trị của ô sau khi thử nước đi
-                        board[i][j] = -1;
+                    // Cập nhật điểm tốt nhất
+                    bestScore = min(bestScore, currentScore);
+                    beta = min(beta, bestScore);
+
+                    // Đặt lại giá trị của ô sau khi thử nước đi
+                    board[i][j] = -1;
+
+                    // Cắt tỉa Alpha
+                    if (beta <= alpha) {
+                        break;
                     }
                 }
             }
-
-            return bestScore;
         }
-    
 
+        return bestScore;
+    }
 }
-
 
 
 void Game::update()
