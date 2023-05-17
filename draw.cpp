@@ -95,13 +95,13 @@ void loadMedia(int id, int x, int y)
 void game_start()
 {
 	loadMedia(0, 0, 0); // render man hinh Menu
-	SDL_RenderPresent(renderer);
+	//SDL_RenderPresent(renderer);
 }
 
 void game_over(int winner)
 {
 	loadMedia(winner + 7, 0, 0); // 0 la X win, 1 la O win, 2 la draw,  +7 de render anh X hoac O win
-	SDL_RenderPresent(renderer);
+	//SDL_RenderPresent(renderer);
 }
 void Renderer()
 {
@@ -113,8 +113,8 @@ void Game::renderboard()//ve X hoac O len man hinh
 	for (int i = 0; i < row; i++)
 		for (int j = 0; j < col; j++)
 			if (board[i][j] != -1)
-				loadMedia(board[i][j] + 5, i * 70 + 82, j * 70 + 96);
-	SDL_RenderPresent(renderer);//tinh sau
+				loadMedia(board[i][j] + 5, j * 70.5 + 103, i * 70.5 + 100);
+	//SDL_RenderPresent(renderer);//tinh sau
 	///////////////////////////////////////////////////
 	///////////////////////////////////////////////////
 }

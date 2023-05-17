@@ -174,19 +174,15 @@ int Game::bot(int step) // Cách bot chơi
     return score;
 }
 
-
 void Game::setMode(int m)
 {
     mode = m;
 }
 
-
-
 void Game::update()
 {
     if (selected[0] != -1 )
     {
-       
         int X = selected[0];
         int Y = selected[1];
         selected[0] = -1;
@@ -244,7 +240,7 @@ void Game::run()
                 if (mouseX >= 465 && mouseX <= 775 && mouseY >= 615 && mouseY <= 690)
                         setMode(3);
             }
-            cout << mode << endl;
+            
             if (played || mode)
             {
                 played = true;
@@ -254,7 +250,7 @@ void Game::run()
                     init();
                     e.type = NULL;
                 }
-                cout << mode << endl;
+                
                 bool pushedRestart = 0;
                 if (winner != -1 && e.type == SDL_MOUSEBUTTONDOWN)
                 {
@@ -276,12 +272,44 @@ void Game::run()
                     if (mode == 1)
                     {
                         // choi voi bot
-                        quit = true;
+                        
                     }
                     if (mode == 2)
                     {
                         // choi pvp
-                        quit = true;
+                        if (e.type == SDL_MOUSEBUTTONDOWN)
+                        {
+                            mouseX = e.button.x;
+                            mouseY = e.button.y;
+                           /* for (int i = 0; i < row; i++)
+                            {
+                                for (int j = 0; j < col; j++)
+                                {
+                                    cout << board[i][j] << "  ";
+                                }
+                                cout << endl;
+                            }
+                            cout << endl << endl;
+                            cout << "               " << winner << endl;
+                            */
+                        }
+                        updateMouse(mouseX, mouseY);
+
+                        if (selected[0] != -1)
+                        {
+                            int Y = selected[0];
+                            int X = selected[1];
+                            selected[0] = -1;
+                            if (board[X][Y] == -1)
+                            {
+                                board[X][Y] = player;
+                                player = 1 - player;
+                            }
+                            
+                        }
+                        renderboard();
+                        winner=game_state();
+                        
                     }
                     if (mode == 3)
                     {
@@ -290,9 +318,9 @@ void Game::run()
                 }
 
             }
+            if (winner != -1)
+                game_over(winner);
         }
-        if (winner != -1)
-            game_over(winner);
 
         Renderer();
     }
