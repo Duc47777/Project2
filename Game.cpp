@@ -1,5 +1,6 @@
 ﻿
 #include <iostream>
+#include <algorithm>
 #include <windows.h>
 #include <SDL.h>
 #include <SDL_image.h>
@@ -189,10 +190,113 @@ int Game::bot(int step) // Cách bot chơi
     return score;
 }
 
-
 void Game::setMode(int m)
 {
     mode = m;
+}
+
+void Game::botPlay(int player)
+{
+    
+        int bestScore = INT_MIN;
+        int bestMoveX = -1;
+        int bestMoveY = -1;
+
+        // Duyệt qua tất cả các ô trống trên bàn cờ
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                if (board[i][j] == -1) {
+                    // Thử đánh vào ô trống này
+                    board[i][j] = player;
+
+                    // Tính điểm cho nước đi này
+                    int score = minimax(0, false);
+
+                    // Lưu lại nước đi có điểm tốt nhất
+                    if (score > bestScore) {
+                        bestScore = score;
+                        bestMoveX = i;
+                        bestMoveY = j;
+                    }
+
+                    // Đặt lại giá trị của ô sau khi thử nước đi
+                    board[i][j] = -1;
+                }
+            }
+        }
+
+        // Thực hiện nước đi tốt nhất
+        if (bestMoveX != -1 && bestMoveY != -1) {
+            board[bestMoveX][bestMoveY] = player;
+        }
+}
+
+int Game::minimax(int depth, bool maximizingPlayer)
+{
+    // Hàm Minimax để tìm nước đi tốt nhất
+    
+        int score = game_state();
+
+        // Trả về điểm nếu trạng thái hiện tại là trạng thái kết thúc
+        if (score != 0) {
+            return score;
+        }
+
+        // Trường hợp hòa cờ
+        if (depth >= col * row) {
+            return 0;
+        }
+
+        if (maximizingPlayer) {
+            int bestScore = INT_MIN;
+
+            // Duyệt qua tất cả các ô trống trên bàn cờ
+            for (int i = 0; i < row; i++) {
+                for (int j = 0; j < col; j++) {
+                    if (board[i][j] == -1) {
+                        // Thử đánh vào ô trống này
+                        board[i][j] = 1;
+
+                        // Tính điểm cho nước đi này
+                        int currentScore = minimax(depth + 1, false);
+
+                        // Cập nhật điểm tốt nhất
+                        bestScore = max(bestScore, currentScore);
+
+                        // Đặt lại giá trị của ô sau khi thử nước đi
+                        board[i][j] = -1;
+                    }
+                }
+            }
+
+            return bestScore;
+        }
+        else {
+            int bestScore = INT_MAX;
+
+            // Duyệt qua tất cả các ô trống trên bàn cờ
+            for (int i = 0; i < row; i++) {
+                for (int j = 0; j < col; j++) {
+                    if (board[i][j] == -1) {
+                        // Thử đánh vào ô trống này
+                        board[i][j] = 0;
+
+                        // Tính điểm cho nước đi này
+                        int currentScore = minimax(depth + 1, true);
+
+                        // Cập nhật điểm tốt nhất
+                        bestScore = min(bestScore, currentScore);
+
+                        // Đặt lại giá trị của ô sau khi thử nước đi
+                        board[i][j] = -1;
+                    }
+                }
+            }
+
+            return bestScore;
+        }
+    
+
 }
 
 
@@ -312,24 +416,21 @@ void Game::run()
                                         }
                                     }
                                     
-                                    
                                 }
                             }
-                                else
-                                {
-                                    bot(1);
-                                    selected[0] = x;
-                                    selected[1] = y;
-                                    player = 1 - player;
-                                }
-
-                                update();
-                                renderboard();
-
-                                winner = game_state();
+                            else
+                            {
+                                botPlay(player);
+                                
+                                player = 1 - player;
                             }
-                              
+
+                            //update();
+                            renderboard();
+                            winner = game_state();
                         }
+                              
+                    }
                     if (mode == 2)
                     {
                         
