@@ -1,4 +1,5 @@
-﻿#include <iostream>
+﻿
+#include <iostream>
 #include <windows.h>
 #include <SDL.h>
 #include <SDL_image.h>
@@ -21,7 +22,7 @@ void Game::init()
 void Game::updateMouse(int mouseX, int mouseY)
 {
     int X = (mouseX - 105) / 70;
-    int Y = (mouseY - 98 ) / 70 ; 
+    int Y = (mouseY - 98) / 70;
     if (X >= 0 && Y >= 0 && X < col && Y < row)
     {
         selected[0] = X;
@@ -55,7 +56,7 @@ int Game::game_state()
             if (checkrow) return board[i][j];
         }
     }
-    
+
     for (int i = 0; i <= (row - 1) - 4; i++)
     {
         for (int j = 0; j < col; j++)
@@ -74,7 +75,7 @@ int Game::game_state()
         }
     }
 
-    
+
     //hàng chéo tren trai -> duoi phai
     for (int i = 0; i <= (row - 1) - 4; i++)
     {
@@ -174,15 +175,19 @@ int Game::bot(int step) // Cách bot chơi
     return score;
 }
 
+
 void Game::setMode(int m)
 {
     mode = m;
 }
 
+
+
 void Game::update()
 {
-    if (selected[0] != -1 )
+    if (selected[0] != -1)
     {
+
         int X = selected[0];
         int Y = selected[1];
         selected[0] = -1;
@@ -214,7 +219,7 @@ void Game::run()
             {
                 quit = true;
             }
-            
+
             if (!played && e.type == SDL_MOUSEMOTION)
             {
                 mouseX = e.motion.x;
@@ -229,18 +234,18 @@ void Game::run()
             }
             if (!mode && e.type == SDL_MOUSEBUTTONDOWN)
             {
-                
+
                 mouseX = e.button.x;
                 mouseY = e.button.y;
 
                 if (mouseX >= 465 && mouseX <= 775 && mouseY >= 375 && mouseY <= 450)
-                        setMode(1);
+                    setMode(1);
                 if (mouseX >= 465 && mouseX <= 775 && mouseY >= 495 && mouseY <= 570)
-                        setMode(2);
+                    setMode(2);
                 if (mouseX >= 465 && mouseX <= 775 && mouseY >= 615 && mouseY <= 690)
-                        setMode(3);
+                    setMode(3);
             }
-            
+            cout << mode << endl;
             if (played || mode)
             {
                 played = true;
@@ -250,11 +255,11 @@ void Game::run()
                     init();
                     e.type = NULL;
                 }
-                
+                cout << mode << endl;
                 bool pushedRestart = 0;
                 if (winner != -1 && e.type == SDL_MOUSEBUTTONDOWN)
                 {
-                    
+
                     mouseX = e.button.x;
                     mouseY = e.button.y;
                     if (mouseX >= 467 && mouseX <= 776 && mouseY >= 462 && mouseY <= 540)
@@ -269,30 +274,56 @@ void Game::run()
 
                 if (winner == -1)// nhan vao input tu chuot trong luc choi game
                 {
-                    if (mode == 1)
-                    {
-                        // choi voi bot
-                        
-                    }
+                        if (mode == 1)
+                        {
+                            if (winner == -1 && played)
+                            {
+                                if (player == 0)
+                                {
+                                    if (e.type == SDL_MOUSEBUTTONDOWN)
+                                    {
+                                        mouseX = e.button.x;
+                                        mouseY = e.button.y;
+                                    updateMouse(mouseX, mouseY);
+
+                                    if (selected[0] != -1)
+                                    {
+                                        int Y = selected[0];
+                                        int X = selected[1];
+                                        selected[0] = -1;
+                                        if (board[X][Y] == -1)
+                                        {
+                                            board[X][Y] = player;
+                                            player = 1 - player;
+                                        }
+                                    }
+                                    
+                                    
+                                }
+                            }
+                                else
+                                {
+                                    bot(1);
+                                    selected[0] = x;
+                                    selected[1] = y;
+                                    player = 1 - player;
+                                }
+
+                                update();
+                                renderboard();
+
+                                winner = game_state();
+                            }
+                              
+                        }
                     if (mode == 2)
                     {
-                        // choi pvp
+                        
                         if (e.type == SDL_MOUSEBUTTONDOWN)
                         {
                             mouseX = e.button.x;
                             mouseY = e.button.y;
-                           /* for (int i = 0; i < row; i++)
-                            {
-                                for (int j = 0; j < col; j++)
-                                {
-                                    cout << board[i][j] << "  ";
-                                }
-                                cout << endl;
-                            }
-                            cout << endl << endl;
-                            cout << "               " << winner << endl;
-                            */
-                        }
+                        
                         updateMouse(mouseX, mouseY);
 
                         if (selected[0] != -1)
@@ -305,11 +336,11 @@ void Game::run()
                                 board[X][Y] = player;
                                 player = 1 - player;
                             }
-                            
+                        }
                         }
                         renderboard();
-                        winner=game_state();
-                        
+                        winner = game_state();
+
                     }
                     if (mode == 3)
                     {
@@ -318,9 +349,9 @@ void Game::run()
                 }
 
             }
-            if (winner != -1)
-                game_over(winner);
         }
+        if (winner != -1)
+            game_over(winner);
 
         Renderer();
     }
