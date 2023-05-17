@@ -20,9 +20,9 @@ void Game::init()
 
 void Game::updateMouse(int mouseX, int mouseY)
 {
-    int X = mouseX / 100;
-    int Y = mouseY / 100; //100 x 100 pixel
-    if (X >= 0 && Y >= 0 && X < N && Y < N)
+    int X = (mouseX - 105) / 70;
+    int Y = (mouseY - 98 ) / 70 ; 
+    if (X >= 0 && Y >= 0 && X < col && Y < row)
     {
         selected[0] = X;
         selected[1] = Y;
@@ -33,162 +33,173 @@ int Game::game_state()
 {
     //check draw
     bool draw = true;
-    for (int i = 0; i < N;i++)
-        for (int j = 0; j < N; j++)
+    for (int i = 0; i < row;i++)
+        for (int j = 0; j < col; j++)
             if (board[i][j] == -1) draw = false;
     if (draw) return 2;
 
-    for (int i = 0; i < N; i++)
+    for (int i = 0; i < row; i++)
     {
-        bool checkrow = true;
-        bool checkcol = true;
-
-        for (int j = 0; j < N; j++)
+        for (int j = 0; j <= (col - 1) - 4; j++)
         {
             // check hàng ngang
-            if (board[i][j] != board[i][0] )
+            bool checkrow = true;
+            for (int k = j + 1; k <= j + 4; k++)
             {
-                checkrow = false;
+                if (board[i][k] != board[i][j])
+                {
+                    checkrow = false;
+                    break;
+                }
             }
-
-            // check hàng dọc
-            if (board[j][i] != board[0][i] )
-            {
-                checkcol = false;
-            }
+            if (checkrow) return board[i][j];
         }
-
-        if (checkrow) return board[i][0];
-
-        if (checkcol) return board[0][i];
-
     }
-    //hàng chéo
-    bool checkcheoTayBacDongNam = true;
-    /*
-    0
-      0
-        0
-          0
-    */
-    bool checkcheoDongBacTayNam = true;
-    /*
-          0
-        0
-      0
-    0
-    */
-    for (int i = 0; i < N; i++)
+    
+    for (int i = 0; i <= (row - 1) - 4; i++)
     {
-        if (board[i][i] != board[0][0] ) checkcheoTayBacDongNam = false;
-        if (board[i][N - 1 - i] != board[0][N - 1]) checkcheoDongBacTayNam = false;
+        for (int j = 0; j < col; j++)
+        {
+            // Check hàng dọc
+            bool checkcol = true;
+            for (int k = i + 1; k <= i + 4; k++)
+            {
+                if (board[k][j] != board[i][j])
+                {
+                    checkcol = false;
+                    break;
+                }
+            }
+            if (checkcol) return board[i][j];
+        }
     }
-    if (checkcheoTayBacDongNam)  return board[0][0];
-    if (checkcheoDongBacTayNam)  return board[0][N - 1];
 
+    
+    //hàng chéo tren trai -> duoi phai
+    for (int i = 0; i <= (row - 1) - 4; i++)
+    {
+        for (int j = 0; j <= (col - 1) - 4; j++)
+        {
+            // Kiểm tra hàng chéo từ trên bên trái xuống dưới bên phải
+            bool checkYbangX = true;
+            for (int k = 1; k <= 4; k++)
+            {
+                if (board[i + k][j + k] != board[i][j])
+                {
+                    checkYbangX = false;
+                    break;
+                }
+            }
+            if (checkYbangX) return board[i][j];
+        }
+    }
+
+    for (int i = 0; i <= (row - 1) - 4; i++)
+    {
+        for (int j = 4; j < col; j++)
+        {
+            // Kiểm tra hàng chéo ngược từ trên bên phải xuống dưới bên trái
+            bool checkYbangtruX = true;
+            for (int k = 1; k <= 4; k++)
+            {
+                if (board[i + k][j - k] != board[i][j])
+                {
+                    checkYbangtruX = false;
+                    break;
+                }
+            }
+            if (checkYbangtruX) return board[i][j];
+        }
+    }
 
     return -1;
 }
 
-/*
-int Game::bot(int step) //how bot plays
+int Game::bot(int step) // Cách bot chơi
 {
     int score = game_state();
     if (score != -1 || step == 4)
     {
-        if (score == 1) score = 24 - step - 1;
-        else if (score == 0) score = step - 1 - 24;
-        else score = 0;
+        if (score == 1)
+            score = row * col - 1 - step - 1;
+        else if (score == 0)
+            score = step - 1 - (row * col - 1);
+        else
+            score = 0;
         return score;
     }
     int turn = step % 2;
 
     int test;
-    if (turn == 1) score = -24; else score = 24;
-    for (int i = 0;i < N;i++)
-        for (int j = 0; j < N;j++)
+    if (turn == 1)
+        score = -(row * col - 1);
+    else
+        score = row * col - 1;
+    for (int i = 0; i < row; i++)
+    {
+        for (int j = 0; j < col; j++)
+        {
             if (board[i][j] == -1)
             {
                 board[i][j] = turn;
                 test = bot(step + 1);
                 if (turn == 1)
                 {
-                    if (test > score)//kiểm tra giá trị thử của bot có tốt hơn không
+                    if (test > score)
                     {
                         score = test;
-                        if (step == 1) { x = i; y = j; }
+                        if (step == 1)
+                        {
+                            x = i;
+                            y = j;
+                        }
                     }
                 }
                 else
                 {
-                    if (test < score)//kiểm tra giá trị thử của người chơi
+                    if (test < score)
                     {
                         score = test;
-                        if (step == 0) { x = i; y = j; }
+                        if (step == 0)
+                        {
+                            x = i;
+                            y = j;
+                        }
                     }
                 }
                 board[i][j] = -1;
             }
-    return score;
-}*/
-
-int Game::bot(int step) //how bot plays
-{
-    int score = game_state();
-    if (score != -1 || step == 4)
-    {
-        if (score == 1) score = N*N -1 - step - 1;
-        else if (score == 0) score = step - 1 - (N*N-1);
-        else score = 0;
-        return score;
+        }
     }
-    int turn = step % 2;
-
-    int test;
-    if (turn == 1) score = -(N*N-1); else score = N*N-1;
-    for (int i = 0; i < N; i++)
-        for (int j = 0; j < N; j++)
-            if (board[i][j] == -1)
-            {
-                board[i][j] = turn;
-                test = bot(step + 1);
-                if (turn == 1)
-                {
-                    if (test > score)//kiểm tra giá trị thử của bot có tốt hơn không
-                    {
-                        score = test;
-                        if (step == 1) { x = i; y = j; }
-                    }
-                }
-                else
-                {
-                    if (test < score)//kiểm tra giá trị thử của người chơi
-                    {
-                        score = test;
-                        if (step == 0) { x = i; y = j; }
-                    }
-                }
-                board[i][j] = -1;
-            }
     return score;
 }
 
+
+void Game::setMode(int m)
+{
+    mode = m;
+}
+
+
+
 void Game::update()
 {
-    if (selected[0] != -1 || player == 1)
+    if (selected[0] != -1 )
     {
-        if (player == 1)
-        {
-            bot(1);
-            selected[0] = x;
-            selected[1] = y;
-        }
+       
         int X = selected[0];
         int Y = selected[1];
         selected[0] = -1;
         if (board[X][Y] != -1) return;
         board[X][Y] = player;
         player = 1 - player;
+
+        if (mode == 1 && player == 1)
+        {
+            bot(1);
+            selected[0] = x;
+            selected[1] = y;
+        }
     }
 }
 
@@ -198,46 +209,92 @@ void Game::run()
     SDL_Event e;
     Init();
     game_start();
+    setMode(0);
     while (!quit)
     {
         while (SDL_PollEvent(&e) != 0)
         {
-            if (e.type == SDL_QUIT) quit = true;
+            if (e.type == SDL_QUIT)
+            {
+                quit = true;
+            }
             
-            if (played || (e.type == SDL_MOUSEBUTTONDOWN && mouseX >= 168 && mouseX <= 332 && mouseY >= 270 && mouseY <= 334))
+            if (!played && e.type == SDL_MOUSEMOTION)
+            {
+                mouseX = e.motion.x;
+                mouseY = e.motion.y;
+                if (mouseX >= 465 && mouseX <= 775 && mouseY >= 375 && mouseY <= 450)
+                    loadMedia(1, 0, 0);
+                if (mouseX >= 465 && mouseX <= 775 && mouseY >= 495 && mouseY <= 570)
+                    loadMedia(2, 0, 0);
+                if (mouseX >= 465 && mouseX <= 775 && mouseY >= 615 && mouseY <= 690)
+                    loadMedia(3, 0, 0);
+
+            }
+            if (!mode && e.type == SDL_MOUSEBUTTONDOWN)
+            {
+                
+                mouseX = e.button.x;
+                mouseY = e.button.y;
+
+                if (mouseX >= 465 && mouseX <= 775 && mouseY >= 375 && mouseY <= 450)
+                        setMode(1);
+                if (mouseX >= 465 && mouseX <= 775 && mouseY >= 495 && mouseY <= 570)
+                        setMode(2);
+                if (mouseX >= 465 && mouseX <= 775 && mouseY >= 615 && mouseY <= 690)
+                        setMode(3);
+            }
+            cout << mode << endl;
+            if (played || mode)
             {
                 played = true;
-                
-                if (restart)
+
+                if (restart)// option choi lai
                 {
                     init();
                     e.type = NULL;
                 }
-
-                if (winner == -1 && player == 0 && e.type == SDL_MOUSEBUTTONDOWN && e.button.clicks == 1)
+                cout << mode << endl;
+                bool pushedRestart = 0;
+                if (winner != -1 && e.type == SDL_MOUSEBUTTONDOWN)
                 {
-                    updateMouse(mouseX, mouseY);
-                    e.type = NULL;
+                    
+                    mouseX = e.button.x;
+                    mouseY = e.button.y;
+                    if (mouseX >= 467 && mouseX <= 776 && mouseY >= 462 && mouseY <= 540)
+                    {
+                        pushedRestart = 1;
+                    }
                 }
-
-                if (winner != -1 && e.type == SDL_MOUSEBUTTONDOWN && mouseX >= 165 && mouseX <= 332 && mouseY >= 270 && mouseY <= 334)
+                if (winner != -1 && pushedRestart)// xu li vi tri an restart
                 {
                     restart = true;
                 }
+
+                if (winner == -1)// nhan vao input tu chuot trong luc choi game
+                {
+                    if (mode == 1)
+                    {
+                        // choi voi bot
+                        quit = true;
+                    }
+                    if (mode == 2)
+                    {
+                        // choi pvp
+                        quit = true;
+                    }
+                    if (mode == 3)
+                    {
+                        quit = true;
+                    }
+                }
+
             }
         }
-        if (winner == -1 && played)
-        {
-            update();
-            render();
-            winner = game_state();
-        }
-        if (winner != -1) game_over(winner);
+        if (winner != -1)
+            game_over(winner);
 
-        if (e.type == SDL_MOUSEMOTION) {
-            mouseX = e.button.x;
-            mouseY = e.button.y;    
-        }
+        Renderer();
     }
 
     close();

@@ -4,9 +4,9 @@
 using namespace std;
 
 void Init();
-void loadMedia(string path, int x, int y, int w, int h);
+void loadMedia(int id, int x, int y);
 void game_start();
 void game_over(int winner);
-
+void Renderer();
 void close();
 #endif //draw_h_h
