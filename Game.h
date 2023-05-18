@@ -26,7 +26,6 @@ public:
     int minimax(int depth,int alpha, int beta, bool maximizingPlayer);
 private:
     void updateMouse(int mouseX, int mouseY);
-    void update();
     void renderboard();
     int  game_state();
     int  bot(int turn);
