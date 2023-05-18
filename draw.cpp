@@ -92,16 +92,26 @@ void loadMedia(int id, int x, int y)
 	SDL_RenderCopy(renderer, texture[id], NULL, &dest);
 }
 
-void game_start()
+void Game::game_start(SDL_Event e)
 {
-	loadMedia(0, 0, 0); // render man hinh Menu
-	//SDL_RenderPresent(renderer);
+	if (!played && e.type == SDL_MOUSEMOTION)
+	{
+		int mouseX = e.motion.x;
+		int mouseY = e.motion.y;
+		if (mouseX >= 465 && mouseX <= 775 && mouseY >= 375 && mouseY <= 450)
+			loadMedia(1, 0, 0); //pvbot
+		else if (mouseX >= 465 && mouseX <= 775 && mouseY >= 495 && mouseY <= 570)
+			loadMedia(2, 0, 0); // pvp
+		else if (mouseX >= 465 && mouseX <= 775 && mouseY >= 615 && mouseY <= 690)
+			loadMedia(3, 0, 0);// quit
+		else
+			loadMedia(0, 0, 0);
+	}
 }
 
 void game_over(int winner)
 {
 	loadMedia(winner + 7, 0, 0); // 0 la X win, 1 la O win, 2 la draw,  +7 de render anh X hoac O win
-	//SDL_RenderPresent(renderer);
 }
 void Renderer()
 {
@@ -114,9 +124,6 @@ void Game::renderboard()//ve X hoac O len man hinh
 		for (int j = 0; j < col; j++)
 			if (board[i][j] != -1)
 				loadMedia(board[i][j] + 5, j * 70.5 + 103, i * 70.5 + 100);
-	//SDL_RenderPresent(renderer);//tinh sau
-	///////////////////////////////////////////////////
-	///////////////////////////////////////////////////
 }
 
 void close()
