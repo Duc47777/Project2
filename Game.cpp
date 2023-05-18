@@ -14,7 +14,9 @@ using namespace std;
 void Game::init()
 {
     restart = false;
+    replay = false;
     mode = 0;
+    boardMode = 0;
     played = 0;
     player = 0;
     winner = -1;
@@ -24,8 +26,8 @@ void Game::init()
 
 void Game::updateMouse(int mouseX, int mouseY)
 {
-    int X = (mouseX - 106) / 70;
-    int Y = (mouseY - 100) / 70;
+    int X = (mouseX - ChechLechX) / DoDaiCanh;
+    int Y = (mouseY - ChechLechY) / DoDaiCanh;
     if (X >= 0 && Y >= 0 && X < col && Y < row)
     {
         selected[0] = X;
@@ -36,12 +38,31 @@ void Game::updateMouse(int mouseX, int mouseY)
 int Game::game_state()
 {
     //check draw
-    bool draw = true;
-    for (int i = 0; i < row;i++)
-        for (int j = 0; j < col; j++)
-            if (board[i][j] == -1) draw = false;
-    if (draw) return 2;
+    if(boardMode == 1)
+    { 
+        for (int i = 0; i < 3; i++)
+            if (board[i][1] == board[i][0] && board[i][0] == board[i][2] && board[i][0] != -1 && board[i][1] != -1 && board[i][2] != -1)
+                return board[i][0];
+        for (int i = 0; i < 3; i++)
+            if (board[0][i] == board[1][i] && board[0][i] == board[2][i] && board[0][i] != -1 && board[1][i] != -1 && board[2][i] != -1)
+                return board[0][i];
+        if (board[1][1] == board[0][0] && board[0][0] == board[2][2] && board[1][1] != -1 && board[0][0] != -1 && board[2][2] != -1)
+            return board[0][0];
+        if (board[0][2] == board[1][1] && board[2][0] == board[1][1] && board[2][0] != -1 && board[1][1] != -1 && board[0][2] != -1)
+            return board[1][1];
+        bool checkDraw = true;
+        for (int i = 0; i < 3; i++)
+        {
+            for (int j = 0; j < 3; j++)
+            {
+                if (board [i][j] == -1) checkDraw = false;
+            }
+        }
+        if (checkDraw) return 2;
+        return -1;
 
+
+    }
     for (int i = 0; i < row; i++)
     {
         for (int j = 0; j < col  - 4; j++)
@@ -130,6 +151,12 @@ int Game::game_state()
         }
     }
 
+    bool draw = true;
+    for (int i = 0; i < row; i++)
+        for (int j = 0; j < col; j++)
+            if (board[i][j] == -1) draw = false;
+    if (draw) return 2;
+
     return -1;
 }
 
@@ -200,6 +227,49 @@ void Game::setMode(int x, int y)
         mode = 2;
     else if (x >= 465 && x <= 775 && y >= 615 && y <= 690)
         mode = 3;
+}
+
+void Game::setBoardMode(int x, int y)
+{
+    if (x >= 0 && x < 867 && y >= 260 && y <= 840)
+        boardMode = 1; // impossible
+    else if (x >= 867 && x <= 1240 && y >= 260 && y < 622)
+        boardMode = 2; // normal
+    else if (x >= 867 && x <= 1240 && y >= 622 && y <= 840)
+        boardMode = 3;// easy
+}
+
+void Game::ApplyBoardMode()
+{
+    switch (boardMode)
+    {
+    case 1:
+        row = 3;
+        col = 3;
+        ChenhLechXO = 17;
+        DoDaiCanh = 238;
+        ChechLechX = 280;
+        ChechLechY = 83;
+        break;
+    case 2:
+        row = 5;
+        col = 5;
+        ChenhLechXO = 19;
+        DoDaiCanh = 142;
+        ChechLechX = 274;
+        ChechLechY = 77;
+        break;
+    case 3:
+        row = 10;
+        col = 15;
+        ChenhLechXO = 5;
+        DoDaiCanh = 70.5;
+        ChechLechX = 105;
+        ChechLechY = 100;
+        break;
+    default:
+        break;
+    }
 }
 
 void Game::botPlay(int player)
@@ -391,17 +461,45 @@ void Game::run()
                 quit = true;
             }
 
-            game_start(e);
 
-            if (!mode && e.type == SDL_MOUSEBUTTONDOWN)
+            if (!played && e.type == SDL_MOUSEMOTION)
+                game_start(e);
+
+            if (!boardMode && !mode && e.type == SDL_MOUSEBUTTONDOWN)
             {
                 mouseX = e.motion.x;
                 mouseY = e.motion.y;
                 setMode(mouseX, mouseY);
+                loadMedia(13, 0, 0);
                 continue;
             }
-            
-            if (played || mode)
+
+            if (mode && !played && e.type == SDL_MOUSEMOTION)
+                menu_game_mode(e);
+
+            if (mode && !boardMode && e.type == SDL_MOUSEBUTTONDOWN)
+            {
+                mouseX = e.motion.x;
+                mouseY = e.motion.y;
+                setBoardMode(mouseX, mouseY);// chon mode trong img
+                continue;
+            }
+
+            ApplyBoardMode();
+            cout <<boardMode << " " << row << " " << col << endl;
+
+            if (restart)
+            {
+                init();
+                e.type = NULL;
+            }
+            if (replay)
+            {
+                memset(board, -1, sizeof(board));
+                memset(selected, -1, sizeof(selected));
+                replay = 1 - replay;
+            }
+            if (played || (mode&&boardMode))
             {
                 played = true;
 
@@ -410,7 +508,16 @@ void Game::run()
                     init();
                     e.type = NULL;
                 }
-                
+                if (e.type == SDL_MOUSEBUTTONDOWN)
+                {
+                    mouseX = e.motion.x;
+                    mouseY = e.motion.y;
+                    if (mouseX > 32 && mouseX < 99 && mouseY >32 && mouseY < 99)
+                    {
+                        replay = true;
+                        loadMedia(boardMode + 9, 0, 0);
+                    }
+                }
                 if (winner != -1 && e.type == SDL_MOUSEBUTTONDOWN )
                 {
 
@@ -424,7 +531,7 @@ void Game::run()
                     }
                 }
                 
-                if (winner == -1)// nhan vao input tu chuot trong luc choi game
+                if (winner == -1 && boardMode)// nhan vao input tu chuot trong luc choi game
                 {
                     switch (mode)
                     {
