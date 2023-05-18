@@ -194,11 +194,11 @@ int Game::bot(int step) // Cách bot chơi
 
 void Game::setMode(int x, int y)
 {
-    if (x >= 465 && x <= 775 && y >= 375 && y <= 450)
+         if (x >= 465 && x <= 775 && y >= 375 && y <= 450)
         mode = 1;
-    if (x >= 465 && x <= 775 && y >= 495 && y <= 570)
+    else if (x >= 465 && x <= 775 && y >= 495 && y <= 570)
         mode = 2;
-    if (x >= 465 && x <= 775 && y >= 615 && y <= 690)
+    else if (x >= 465 && x <= 775 && y >= 615 && y <= 690)
         mode = 3;
 }
 
@@ -392,14 +392,13 @@ void Game::run()
             }
 
             game_start(e);
-            
+
             if (!mode && e.type == SDL_MOUSEBUTTONDOWN)
             {
-
-                mouseX = e.button.x;
-                mouseY = e.button.y;
+                mouseX = e.motion.x;
+                mouseY = e.motion.y;
                 setMode(mouseX, mouseY);
-                
+                continue;
             }
             
             if (played || mode)
@@ -443,7 +442,6 @@ void Game::run()
                     }
                 }
             }
-
             if (winner != -1)
                 game_over(winner);
             Renderer();
