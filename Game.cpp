@@ -382,7 +382,6 @@ void Game::run()
     int mouseX = 0, mouseY = 0;
     SDL_Event e;
     Init();
-    mode = 0;
     while (!quit)
     {
         while (SDL_PollEvent(&e) != 0)
@@ -421,6 +420,7 @@ void Game::run()
                     if (mouseX >= 467 && mouseX <= 776 && mouseY >= 462 && mouseY <= 540 )
                     {
                         restart = true;
+                        loadMedia(0, 0, 0);
                         continue;
                     }
                 }
@@ -443,12 +443,12 @@ void Game::run()
                     }
                 }
             }
+
+            if (winner != -1)
+                game_over(winner);
+            Renderer();
         }
-        if (winner != -1)
-        {
-            game_over(winner);
-        }
-        Renderer();
+        
     }
 
     close();

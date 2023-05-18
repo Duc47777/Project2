@@ -17,7 +17,7 @@ class Game
     int board[row][col];// khoi tam mang 2 chieu
     int selected[2]; // toa do x, y cua nuoc di cua nguoi choi duoc ghi lai trong mang 2 chieu, [0] la X, [1] la y
     int x, y;
-    int mode;
+    int mode = 0;
 
 public:
     void init();
