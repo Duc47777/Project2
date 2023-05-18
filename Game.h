@@ -1,6 +1,7 @@
 #ifndef game_h_
 #define game_h_
 
+#include <SDL.h>
 
 #define SCREEN_WIDTH 1240
 #define SCREEN_HEIGHT 840
@@ -21,9 +22,13 @@ class Game
 public:
     void init();
     void run();
-    void setMode(int m);
+    void game_start(SDL_Event e);
+    void setMode(int x, int y);
     void botPlay(int player);
-    int minimax(int depth,int alpha, int beta, bool maximizingPlayer);
+    int  minimax(int depth,int alpha, int beta, bool maximizingPlayer);
+   
+    void GameMode1(SDL_Event e, int mouseXX, int mouseYY);
+    void GameMode2(SDL_Event e, int mouseXX, int mouseYY);
 private:
     void updateMouse(int mouseX, int mouseY);
     void renderboard();

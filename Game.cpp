@@ -1,4 +1,4 @@
-
+﻿
 #include <iostream>
 #include <algorithm>
 #include <windows.h>
@@ -192,9 +192,14 @@ int Game::bot(int step) // Cách bot chơi
     return score;
 }
 
-void Game::setMode(int m)
+void Game::setMode(int x, int y)
 {
-    mode = m;
+    if (x >= 465 && x <= 775 && y >= 375 && y <= 450)
+        mode = 1;
+    if (x >= 465 && x <= 775 && y >= 495 && y <= 570)
+        mode = 2;
+    if (x >= 465 && x <= 775 && y >= 615 && y <= 690)
+        mode = 3;
 }
 
 void Game::botPlay(int player)
@@ -309,13 +314,75 @@ int Game::minimax(int depth, int alpha, int beta, bool maximizingPlayer) {
     }
 }
 
+void Game::GameMode1(SDL_Event e, int mouseXX, int mouseYY)
+{
+    if (winner == -1 && played)
+    {
+        if (player == 0)
+        {
+            if (e.type == SDL_MOUSEBUTTONDOWN)
+            {
+                mouseXX = e.button.x;
+                mouseYY = e.button.y;
+                updateMouse(mouseXX, mouseYY);
+
+                if (selected[0] != -1)
+                {
+                    int Y = selected[0];
+                    int X = selected[1];
+                    selected[0] = -1;
+                    if (board[X][Y] == -1)
+                    {
+                        board[X][Y] = player;
+                        player = 1 - player;
+                    }
+                }
+
+            }
+        }
+        else
+        {
+            botPlay(player);
+
+            player = 1 - player;
+        }
+        renderboard();
+        winner = game_state();
+    }
+}
+
+void Game::GameMode2(SDL_Event e, int mouseXX, int mouseYY)
+{
+    
+    if (e.type == SDL_MOUSEBUTTONDOWN)
+    {
+        mouseXX = e.button.x;
+        mouseYY = e.button.y;
+
+        updateMouse(mouseXX, mouseYY);
+
+        if (selected[0] != -1)
+        {
+            int Y = selected[0];
+            int X = selected[1];
+            selected[0] = -1;
+            if (board[X][Y] == -1)
+            {
+                board[X][Y] = player;
+                player = 1 - player;
+            }
+        }
+    }
+    renderboard();
+    winner = game_state();
+}
+
 void Game::run()
 {
-    int mouseX, mouseY;
+    int mouseX = 0, mouseY = 0;
     SDL_Event e;
     Init();
-    game_start();
-    setMode(0);
+    mode = 0;
     while (!quit)
     {
         while (SDL_PollEvent(&e) != 0)
@@ -325,30 +392,15 @@ void Game::run()
                 quit = true;
             }
 
-            if (!played && e.type == SDL_MOUSEMOTION)
-            {
-                mouseX = e.motion.x;
-                mouseY = e.motion.y;
-                if (mouseX >= 465 && mouseX <= 775 && mouseY >= 375 && mouseY <= 450)
-                    loadMedia(1, 0, 0);
-                if (mouseX >= 465 && mouseX <= 775 && mouseY >= 495 && mouseY <= 570)
-                    loadMedia(2, 0, 0);
-                if (mouseX >= 465 && mouseX <= 775 && mouseY >= 615 && mouseY <= 690)
-                    loadMedia(3, 0, 0);
-
-            }
+            game_start(e);
+            
             if (!mode && e.type == SDL_MOUSEBUTTONDOWN)
             {
 
                 mouseX = e.button.x;
                 mouseY = e.button.y;
-
-                if (mouseX >= 465 && mouseX <= 775 && mouseY >= 375 && mouseY <= 450)
-                    setMode(1);
-                if (mouseX >= 465 && mouseX <= 775 && mouseY >= 495 && mouseY <= 570)
-                    setMode(2);
-                if (mouseX >= 465 && mouseX <= 775 && mouseY >= 615 && mouseY <= 690)
-                    setMode(3);
+                setMode(mouseX, mouseY);
+                
             }
             
             if (played || mode)
@@ -366,85 +418,31 @@ void Game::run()
 
                     mouseX = e.button.x;
                     mouseY = e.button.y;
-                    if ((mouseX >= 467 && mouseX <= 776 && mouseY >= 462 && mouseY <= 540 ) && winner != -1)
+                    if (mouseX >= 467 && mouseX <= 776 && mouseY >= 462 && mouseY <= 540 )
                     {
                         restart = true;
+                        continue;
                     }
                 }
+                
                 if (winner == -1)// nhan vao input tu chuot trong luc choi game
                 {
-                    if (mode == 1)
+                    switch (mode)
                     {
-                        if (winner == -1 && played)
-                        {
-                            if (player == 0)
-                            {
-                                if (e.type == SDL_MOUSEBUTTONDOWN)
-                                {
-                                    mouseX = e.button.x;
-                                    mouseY = e.button.y;
-                                    updateMouse(mouseX, mouseY);
-
-                                    if (selected[0] != -1)
-                                    {
-                                        int Y = selected[0];
-                                        int X = selected[1];
-                                        selected[0] = -1;
-                                        if (board[X][Y] == -1)
-                                        {
-                                            board[X][Y] = player;
-                                            player = 1 - player;
-                                        }
-                                    }
-                                    
-                                }
-                            }
-                            else
-                            {
-                                botPlay(player);
-                                
-                                player = 1 - player;
-                            }
-
-                            //update();
-                            renderboard();
-                            winner = game_state();
-                        }
-                    }
-                    if (mode == 2)
-                    {
-                        
-                        if (e.type == SDL_MOUSEBUTTONDOWN)
-                        {
-                            mouseX = e.button.x;
-                            mouseY = e.button.y;
-                        
-                            updateMouse(mouseX, mouseY);
-
-                            if (selected[0] != -1)
-                            {
-                                int Y = selected[0];
-                                int X = selected[1];
-                                selected[0] = -1;
-                                if (board[X][Y] == -1)
-                                {
-                                    board[X][Y] = player;
-                                    player = 1 - player;
-                                }
-                            }
-                        }
-                        renderboard();
-                        winner = game_state();
-                        
-                    }
-                    if (mode == 3)
-                    {
-                        quit = true;
+                        case 1:
+                            GameMode1(e, mouseX, mouseY);
+                            break;
+                        case 2:
+                            GameMode2(e, mouseX, mouseY);
+                            break;
+                        case 3:
+                            quit = true;
+                            break;
+                        default:
+                            break;
                     }
                 }
-
             }
-            
         }
         if (winner != -1)
         {
