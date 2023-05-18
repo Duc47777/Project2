@@ -1,4 +1,4 @@
-﻿
+
 #include <iostream>
 #include <algorithm>
 #include <windows.h>
@@ -14,6 +14,8 @@ using namespace std;
 void Game::init()
 {
     restart = false;
+    mode = 0;
+    played = 0;
     player = 0;
     winner = -1;
     memset(board, -1, sizeof(board));
@@ -307,28 +309,6 @@ int Game::minimax(int depth, int alpha, int beta, bool maximizingPlayer) {
     }
 }
 
-
-void Game::update()
-{
-    if (selected[0] != -1)
-    {
-
-        int X = selected[0];
-        int Y = selected[1];
-        selected[0] = -1;
-        if (board[X][Y] != -1) return;
-        board[X][Y] = player;
-        player = 1 - player;
-
-        if (mode == 1 && player == 1)
-        {
-            bot(1);
-            selected[0] = x;
-            selected[1] = y;
-        }
-    }
-}
-
 void Game::run()
 {
     int mouseX, mouseY;
@@ -381,22 +361,16 @@ void Game::run()
                     e.type = NULL;
                 }
                 
-                bool pushedRestart = 0;
                 if (winner != -1 && e.type == SDL_MOUSEBUTTONDOWN )
                 {
 
                     mouseX = e.button.x;
                     mouseY = e.button.y;
-                    if ((mouseX >= 467 && mouseX <= 776 && mouseY >= 462 && mouseY <= 540 ))
+                    if ((mouseX >= 467 && mouseX <= 776 && mouseY >= 462 && mouseY <= 540 ) && winner != -1)
                     {
-                        pushedRestart = 1;
+                        restart = true;
                     }
                 }
-                if (winner != -1 && pushedRestart)// xu li vi tri an restart
-                {
-                    restart = true;
-                }
-
                 if (winner == -1)// nhan vao input tu chuot trong luc choi game
                 {
                     if (mode == 1)
@@ -436,7 +410,6 @@ void Game::run()
                             renderboard();
                             winner = game_state();
                         }
-                              
                     }
                     if (mode == 2)
                     {
@@ -471,10 +444,12 @@ void Game::run()
                 }
 
             }
+            
         }
         if (winner != -1)
+        {
             game_over(winner);
-
+        }
         Renderer();
     }
 
