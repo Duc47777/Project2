@@ -9,6 +9,7 @@
 #include "draw.h"
 #include "Game.h"
 
+
 using namespace std;
 
 void Game::init()
@@ -160,83 +161,43 @@ int Game::game_state()
     return -1;
 }
 
-int Game::bot(int step) // Cách bot chơi
+void Game::SetGameMode(int x, int y)
 {
-    int score = game_state();
-    if (score != -1 || step == 4)
+    if (x >= 465 && x <= 775 && y >= 375 && y <= 450)
     {
-        if (score == 1)
-            score = row * col - 1 - step - 1;
-        else if (score == 0)
-            score = step - 1 - (row * col - 1);
-        else
-            score = 0;
-        return score;
-    }
-    int turn = step % 2;
-
-    int test;
-    if (turn == 1)
-        score = -(row * col - 1);
-    else
-        score = row * col - 1;
-    for (int i = 0; i < row; i++)
-    {
-        for (int j = 0; j < col; j++)
-        {
-            if (board[i][j] == -1)
-            {
-                board[i][j] = turn;
-                test = bot(step + 1);
-                if (turn == 1)
-                {
-                    if (test > score)
-                    {
-                        score = test;
-                        if (step == 1)
-                        {
-                            x = i;
-                            y = j;
-                        }
-                    }
-                }
-                else
-                {
-                    if (test < score)
-                    {
-                        score = test;
-                        if (step == 0)
-                        {
-                            x = i;
-                            y = j;
-                        }
-                    }
-                }
-                board[i][j] = -1;
-            }
-        }
-    }
-    return score;
-}
-
-void Game::setMode(int x, int y)
-{
-         if (x >= 465 && x <= 775 && y >= 375 && y <= 450)
         mode = 1;
+        PlayMedia(0);
+    }
     else if (x >= 465 && x <= 775 && y >= 495 && y <= 570)
+    {
         mode = 2;
+        PlayMedia(0);
+    }
     else if (x >= 465 && x <= 775 && y >= 615 && y <= 690)
+    {
         mode = 3;
+        PlayMedia(0);
+        quit = 1;
+    }
 }
 
 void Game::setBoardMode(int x, int y)
 {
     if (x >= 0 && x < 867 && y >= 260 && y <= 840)
+    {
         boardMode = 1; // impossible
+        PlayMedia(1);
+    }
     else if (x >= 867 && x <= 1240 && y >= 260 && y < 622)
+    {
         boardMode = 2; // normal
+        PlayMedia(1);
+    }
     else if (x >= 867 && x <= 1240 && y >= 622 && y <= 840)
-        boardMode = 3;// easy
+    {
+        boardMode = 3; // easy
+        PlayMedia(1);
+    }
 }
 
 void Game::ApplyBoardMode()
@@ -278,7 +239,11 @@ void Game::botPlay(int player)
         int bestScore = INT_MIN;
         int bestMoveX = -1;
         int bestMoveY = -1;
-
+        if (Checkif4())
+        {
+            return;
+        }
+        
         // Duyệt qua tất cả các ô trống trên bàn cờ
         for (int i = 0; i < row; i++) {
             for (int j = 0; j < col; j++) {
@@ -308,7 +273,6 @@ void Game::botPlay(int player)
         }
 }
 
-// Hàm Minimax với cắt tỉa Alpha-Beta để tìm nước đi tốt nhất
 int Game::minimax(int depth, int alpha, int beta, bool maximizingPlayer) {
     int score = game_state();
 
@@ -382,6 +346,17 @@ int Game::minimax(int depth, int alpha, int beta, bool maximizingPlayer) {
 
         return bestScore;
     }
+}  // Hàm Minimax với cắt tỉa Alpha-Beta để tìm nước đi tốt nhất
+
+bool Game::Checkif4()
+{
+    return false;
+}
+
+
+bool Game::Checkif3()
+{
+    return false;
 }
 
 void Game::GameMode1(SDL_Event e, int mouseXX, int mouseYY)
@@ -404,6 +379,7 @@ void Game::GameMode1(SDL_Event e, int mouseXX, int mouseYY)
                     if (board[X][Y] == -1)
                     {
                         board[X][Y] = player;
+                        PlayMedia(2);
                         player = 1 - player;
                     }
                 }
@@ -413,7 +389,7 @@ void Game::GameMode1(SDL_Event e, int mouseXX, int mouseYY)
         else
         {
             botPlay(player);
-
+            PlayMedia(2);
             player = 1 - player;
         }
         renderboard();
@@ -439,6 +415,7 @@ void Game::GameMode2(SDL_Event e, int mouseXX, int mouseYY)
             if (board[X][Y] == -1)
             {
                 board[X][Y] = player;
+                PlayMedia(2);
                 player = 1 - player;
             }
         }
@@ -450,10 +427,12 @@ void Game::GameMode2(SDL_Event e, int mouseXX, int mouseYY)
 void Game::run()
 {
     int mouseX = 0, mouseY = 0;
+    bool endgameSound_played = 0;
     SDL_Event e;
     Init();
     while (!quit)
     {
+        
         while (SDL_PollEvent(&e) != 0)
         {
             if (e.type == SDL_QUIT)
@@ -469,12 +448,18 @@ void Game::run()
             {
                 mouseX = e.motion.x;
                 mouseY = e.motion.y;
-                setMode(mouseX, mouseY);
-                loadMedia(13, 0, 0);
+                SetGameMode(mouseX, mouseY);
+                if (mode == 3)
+                {
+                    break;
+                }
+                
+                
+                Load_image(13, 0, 0);
                 continue;
             }
-
-            if (mode && !played && e.type == SDL_MOUSEMOTION)
+            
+            if (mode && !played && e.type == SDL_MOUSEMOTION )
                 menu_game_mode(e);
 
             if (mode && !boardMode && e.type == SDL_MOUSEBUTTONDOWN)
@@ -490,7 +475,7 @@ void Game::run()
 
             if (restart)
             {
-                init();
+                init();endgameSound_played = 0;
                 e.type = NULL;
             }
             if (replay)
@@ -506,6 +491,7 @@ void Game::run()
                 if (restart)// option choi lai
                 {
                     init();
+                    
                     e.type = NULL;
                 }
                 if (e.type == SDL_MOUSEBUTTONDOWN)
@@ -515,7 +501,7 @@ void Game::run()
                     if (mouseX > 32 && mouseX < 99 && mouseY >32 && mouseY < 99)
                     {
                         replay = true;
-                        loadMedia(boardMode + 9, 0, 0);
+                        Load_image(boardMode + 9, 0, 0);
                     }
                 }
                 if (winner != -1 && e.type == SDL_MOUSEBUTTONDOWN )
@@ -526,7 +512,7 @@ void Game::run()
                     if (mouseX >= 467 && mouseX <= 776 && mouseY >= 462 && mouseY <= 540 )
                     {
                         restart = true;
-                        loadMedia(0, 0, 0);
+                        Load_image(0, 0, 0);
                         continue;
                     }
                 }
@@ -541,16 +527,17 @@ void Game::run()
                         case 2:
                             GameMode2(e, mouseX, mouseY);
                             break;
-                        case 3:
-                            quit = true;
-                            break;
                         default:
                             break;
                     }
                 }
             }
             if (winner != -1)
+            {
                 game_over(winner);
+                if(endgameSound_played==0)(winner == 2) ? PlayMedia(4) : PlayMedia(3);
+                endgameSound_played = 1;
+            }
             Renderer();
         }
         

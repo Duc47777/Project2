@@ -27,19 +27,25 @@ class Game
 public:
     void init();
     void run();
+
     void game_start(SDL_Event e);
-    void setMode(int x, int y);
+    void menu_game_mode(SDL_Event e);
+    void SetGameMode(int x, int y);
     void setBoardMode(int x, int y);
     void ApplyBoardMode();
+    void PlayMedia(int a, int b=1);
+
     void botPlay(int player);
     int  minimax(int depth,int alpha, int beta, bool maximizingPlayer);
-    void menu_game_mode(SDL_Event e);
+    bool Checkif4();
+    bool Checkif3();
+    
     void GameMode1(SDL_Event e, int mouseXX, int mouseYY);
     void GameMode2(SDL_Event e, int mouseXX, int mouseYY);
+
 private:
     void updateMouse(int mouseX, int mouseY);
     void renderboard();
     int  game_state();
-    int  bot(int turn);
 };
 #endif //game_h_h

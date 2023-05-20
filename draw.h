@@ -4,7 +4,7 @@
 using namespace std;
 
 void Init();
-void loadMedia(int id, int x, int y);
+void Load_image(int id, int x, int y);
 void game_over(int winner);
 void Renderer();
 void close();

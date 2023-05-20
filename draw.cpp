@@ -3,9 +3,11 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
+#include <SDL_mixer.h>
 
 #include "Game.h"
 #include "draw.h"
+
 
 using namespace std;
 
@@ -14,6 +16,8 @@ SDL_Renderer* renderer = NULL;
 SDL_Texture* texture[25];
 SDL_Surface* surface[25];
 TTF_Font* font = NULL;
+Mix_Music* music = NULL; // nhac background
+Mix_Chunk* SoundEffect[15];
 
 void Init()
 {
@@ -27,6 +31,21 @@ void Init()
 				SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 		}
 	}
+	
+	Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 4096);
+	
+	music = Mix_LoadMUS("Music/backmusic.wav"); // nhac background
+
+	SoundEffect[0] = Mix_LoadWAV("Music/PickedGameModeMusic.wav");
+	SoundEffect[1] = Mix_LoadWAV("Music/PickedBoard.wav");
+	SoundEffect[2] = Mix_LoadWAV("Music/XO_Played.wav");
+	SoundEffect[3] = Mix_LoadWAV("Music/XO_Win.wav");
+	SoundEffect[4] = Mix_LoadWAV("Music/Draw_Win.wav");
+
+
+	
+
+
 	surface[0] = IMG_Load("NewImage/Menu0.png");
 	texture[0] = SDL_CreateTextureFromSurface(renderer, surface[0]);
 
@@ -65,7 +84,7 @@ void Init()
 
 	surface[13] = IMG_Load("NewImage/ChooseMode.png");
 	texture[13] = SDL_CreateTextureFromSurface(renderer, surface[13]);
-	/*
+	
 	surface[14] = IMG_Load("NewImage/ChooseMode3x3.png");
 	texture[14] = SDL_CreateTextureFromSurface(renderer, surface[14]);
 
@@ -74,7 +93,7 @@ void Init()
 
 	surface[16] = IMG_Load("NewImage/ChooseMode10x15.png");
 	texture[16] = SDL_CreateTextureFromSurface(renderer, surface[16]);
-	*/
+	
 	surface[17] = IMG_Load("NewImage/image_X_33.png");
 	texture[17] = SDL_CreateTextureFromSurface(renderer, surface[17]);
 
@@ -116,7 +135,7 @@ void Init()
 	*/
 }
 
-void loadMedia(int id, int x, int y)
+void Load_image(int id, int x, int y)
 {
 
 	SDL_Rect dest = { x, y,surface[id]->w,surface[id]->h };
@@ -124,36 +143,51 @@ void loadMedia(int id, int x, int y)
 	SDL_RenderCopy(renderer, texture[id], NULL, &dest);
 }
 
+void Game::PlayMedia(int a, int b)
+{
+	Mix_PlayChannel(-1, SoundEffect[a], 0, b);
+}
+
 void Game::game_start(SDL_Event e)
 {
 		int mouseX = e.motion.x;
 		int mouseY = e.motion.y;
 		if (mouseX >= 465 && mouseX <= 775 && mouseY >= 375 && mouseY <= 450)
-			loadMedia(1, 0, 0); //pvbot
+		{
+			Load_image(1, 0, 0); //pvbot
+			//Mix_PlayChannel(-1, SoundEffect[0], 0, -1);
+		}
 		else if (mouseX >= 465 && mouseX <= 775 && mouseY >= 495 && mouseY <= 570)
-			loadMedia(2, 0, 0); // pvp
+		{
+			Load_image(2, 0, 0); // pvp
+			//Mix_PlayChannel(-1, SoundEffect[1], 0, -1);
+
+		}
 		else if (mouseX >= 465 && mouseX <= 775 && mouseY >= 615 && mouseY <= 690)
-			loadMedia(3, 0, 0);// quit
+		{
+			Load_image(3, 0, 0);// quit
+			//Mix_PlayChannel(-1, SoundEffect[2], 0, -1);
+		}
 		else
-			loadMedia(0, 0, 0);
+			Load_image(0, 0, 0);
 }
 
 void Game::menu_game_mode(SDL_Event e)
 {
 	int mouseX = e.motion.x;
 	int mouseY = e.motion.y;
-	/*if (mouseX >= 0 && mouseX < 867 && mouseY >= 260 && mouseY <= 840)
-		loadMedia(1, 0, 0); // impossible
+	if (mouseX >= 0 && mouseX < 867 && mouseY >= 260 && mouseY <= 840)
+		Load_image(14, 0, 0); // impossible
 	else if (mouseX >= 867 && mouseX <= 1240 && mouseY >= 260 && mouseY < 622)
-		loadMedia(2, 0, 0); // normal
+		Load_image(15, 0, 0); // normal
 	else if (mouseX >= 867 && mouseX <= 1240 && mouseY >= 622 && mouseY <= 840)
-		loadMedia(3, 0, 0);// quit
-	else*/
-	loadMedia(13, 0, 0);
+		Load_image(16, 0, 0);// quit
+	else
+	Load_image(13, 0, 0);
 }
 void game_over(int winner)
 {
-	loadMedia(winner + 7, 0, 0); // 0 la X win, 1 la O win, 2 la draw,  +7 de render anh X hoac O win
+	Load_image(winner + 7, 0, 0); // 0 la X win, 1 la O win, 2 la draw,  +7 de render anh X hoac O win
 }
 void Renderer()
 {
@@ -161,12 +195,13 @@ void Renderer()
 }
 void Game::renderboard()//ve X hoac O len man hinh
 {
-	loadMedia(boardMode + 9, 0, 0); // 9 la chenh lech giua hang so cua boardmode va anh cua no
+	Load_image(boardMode + 9, 0, 0); // 9 la chenh lech giua hang so cua boardmode va anh cua no
 	for (int i = 0; i < row; i++)
 		for (int j = 0; j < col; j++)
 			if (board[i][j] != -1)
-				loadMedia(board[i][j] + ChenhLechXO, j * DoDaiCanh + ChechLechX, i * DoDaiCanh + ChechLechY);
+				Load_image(board[i][j] + ChenhLechXO, j * DoDaiCanh + ChechLechX, i * DoDaiCanh + ChechLechY);
 }
+
 
 void close()
 {
@@ -183,3 +218,4 @@ void close()
 	IMG_Quit();
 	SDL_Quit();
 }
+
