@@ -34,15 +34,19 @@ void Init()
 	}
 	
 	Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 4096);
+	Mix_VolumeMusic(50);
+	
 	
 	music = Mix_LoadMUS("Music/backmusic.wav"); // nhac background
-
-	SoundEffect[0] = Mix_LoadWAV("Music/PickedGameModeMusic.wav");
-	SoundEffect[1] = Mix_LoadWAV("Music/PickedBoard.wav");
-	SoundEffect[2] = Mix_LoadWAV("Music/XO_Played.wav");
-	SoundEffect[3] = Mix_LoadWAV("Music/XO_Win.wav");
-	SoundEffect[4] = Mix_LoadWAV("Music/Draw_Win.wav");
-
+	
+		SoundEffect[0] = Mix_LoadWAV("Music/PickedGameModeMusic.wav");
+		SoundEffect[1] = Mix_LoadWAV("Music/PickedBoard.wav");
+		SoundEffect[2] = Mix_LoadWAV("Music/XO_Played.wav");
+		SoundEffect[3] = Mix_LoadWAV("Music/XO_Win.wav");
+		SoundEffect[4] = Mix_LoadWAV("Music/Draw_Win.wav");
+		for (int i = 0; i <= 4; i++) {
+		Mix_VolumeChunk(SoundEffect[i],60);
+	}
 
 	
 
