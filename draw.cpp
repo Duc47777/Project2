@@ -136,6 +136,10 @@ void Init()
 	*/
 } 
 
+void playmusic()
+{
+	Mix_PlayMusic(music, -1);
+}
 // hàm có tác dụng load các ảnh lên renderer
 void       Load_image(int id, int x, int y)
 {
@@ -221,6 +225,9 @@ void close()
 
 	for (int i = 0; i < 25;i++)
 		SDL_FreeSurface(surface[i]);
+
+	for (int i = 0; i < 15; i++)
+		Mix_FreeChunk(SoundEffect[i]);
 
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);

@@ -271,10 +271,15 @@ void Game::botPlay(int player)
     }
     if (boardMode == 1)
     {
+        if (CheckBotWin2())
+            return;
         if (Checkif2())
             return;
-        if (CheckMid3())
+        if (board[1][1] == -1)
+        {
+            board[1][1] = 1;
             return;
+        }
     }
     if (Checkif4())
     {
@@ -289,7 +294,7 @@ void Game::botPlay(int player)
     if (bestMoveX != -1 && bestMoveY != -1) {
         board[bestMoveX][bestMoveY] = player;
     }
-    
+
 }
 
 //kiểm tra xem có 4 ô nào của người chơi không, nếu có thì thực hiện chặn
@@ -500,132 +505,106 @@ bool Game::Checkif2()
 {
     // Kiểm tra hàng và cột
     for (int i = 0; i < 3; i++) {
-        if ((board[i][0] == board[i][1] && board[i][0] == 0) || (board[i][1] == board[i][2] && board[i][1] == 0)) 
+        if ((board[i][0] == board[i][1] && board[i][0] == 0) || (board[i][1] == board[i][2] && board[i][1] == 0) || (board[i][0] == board[i][2] && board[i][0] == 0 ))
         {
-            for (int j = 0; j < 3; j++) 
+            for (int j = 0; j < 3; j++)
             {
-                if (board[i][j] == -1) 
+                if (board[i][j] == -1)
                 {
                     board[i][j] = 1;
                     return true;
                 }
             }
-            
+
         }
 
-        if ((board[0][i] == board[1][i] && board[0][i] == 0) || (board[1][i] == board[2][i] && board[1][i] == 0)) {
+        if ((board[0][i] == board[1][i] && board[0][i] == 0) || (board[1][i] == board[2][i] && board[1][i] == 0) || (board[0][i] == board[2][i] && board[0][i] == 0 )) 
+        {
             for (int j = 0; j < 3; j++) {
                 if (board[j][i] == -1) {
                     board[j][i] = 1;
                     return true;
                 }
             }
-            
+
         }
     }
 
     // Kiểm tra đường chéo
-    if ((board[0][0] == board[1][1] && board[0][0] == 0) || (board[1][1] == board[2][2] && board[1][1] == 0)) {
+    if ((board[0][0] == board[1][1] && board[0][0] == 0) || (board[1][1] == board[2][2] && board[1][1] == 0) || (board[0][0] == board[2][2] && board[0][0] == 0 )) 
+    {
         for (int i = 0; i < 3; i++) {
             if (board[i][i] == -1) {
                 board[i][i] = 1;
                 return true;
             }
         }
-        
+
     }
 
-    if ((board[0][2] == board[1][1] && board[0][2] == 0) || (board[1][1] == board[2][0] && board[1][1] == 0)) {
+    if ((board[0][2] == board[1][1] && board[0][2] == 0) || (board[1][1] == board[2][0] && board[1][1] == 0) || (board[0][2] == board[2][0] && board[0][2] == 0)) {
         for (int i = 0; i < 3; i++) {
             if (board[i][2 - i] == -1) {
                 board[i][2 - i] = 1;
                 return true;
             }
         }
-        
+
     }
 
     return false;
 }
 
-bool Game::CheckMid3() {
-    /*
-   0
-     0
-   */
+bool Game::CheckBotWin2()
+{
 
-    for (int i = 0; i < row - 2; i++) {
-        for (int j = 0; j < col - 1; j++) {
-            if (board[i][j] == board[i + 1][j + 1] && board[i + 1][j + 1] == 0 && board[i + 1][j] == -1) {
-                board[i + 1][j] = 1;
-                return true;
+     // Kiểm tra hàng và cột
+    for (int i = 0; i < 3; i++) {
+        if ((board[i][0] == board[i][1] && board[i][0] == 1) || (board[i][1] == board[i][2] && board[i][1] == 1) || (board[i][0] == board[i][2] && board[i][0] == 1))
+        {
+            for (int j = 0; j < 3; j++)
+            {
+                if (board[i][j] == -1)
+                {
+                    board[i][j] = 1;
+                    return true;
+                }
             }
+
+        }
+
+        if ((board[0][i] == board[1][i] && board[0][i] == 1) || (board[1][i] == board[2][i] && board[1][i] == 1) || (board[0][i] == board[2][i] && board[0][i] == 1)) {
+            for (int j = 0; j < 3; j++) {
+                if (board[j][i] == -1) {
+                    board[j][i] = 1;
+                    return true;
+                }
+            }
+
         }
     }
 
-    /*
-       0
-    0
-    */
-    if (board[0][1] == board[1][0] && board[0][1] == 0 && board[1][1] == -1) {
-        board[1][1] = 1;
-        return true;
-    }
-
-
-    // cheo trai sang phai
-     /*
-     0
-
-        0
-     */
-    if (board[0][0] == board[2][2] && board[0][0] == 0 && board[1][1] == -1) {
-        board[1][1] = 1;
-        return true;
-    }
-
-    // cheo phai tren xuong duoi trai
-      /*
-        0
-
-      0
-      */
-    if (board[0][2] == board[2][0] && board[0][2] == 0 && board[1][1] == -1) {
-        board[1][1] = 1;
-        return true;
-    }
-
-    //doc
-    /*
-    0
-    
-    0
-    */
-    for (int i = 0; i < row - 2; i++) {
-        for (int j = 0; j < col; j++) {
-            if (board[i][j] == board[i + 2][j] && board[i][j] == 0 && board[i + 1][j] == -1) {
-                board[i + 1][j] = 1;
+    // Kiểm tra đường chéo
+    if ((board[0][0] == board[1][1] && board[0][0] == 1) || (board[1][1] == board[2][2] && board[1][1] == 1) || (board[0][0] == board[2][2] && board[0][0] == 1)) {
+        for (int i = 0; i < 3; i++) {
+            if (board[i][i] == -1) {
+                board[i][i] = 1;
                 return true;
             }
         }
-      }
 
-    //ngang
-    /*
-      0   0
-    */
-    for (int i = 0; i < row; i++) {
-        for (int j = 0; j < col - 2; j++) {
-            if (board[i][j] == board[i][j + 2] && board[i][j] == 0 && board[i][j + 1] == -1) {
-                board[i][j + 1] = 1;
+    }
+
+    if ((board[0][2] == board[1][1] && board[0][2] == 1) || (board[1][1] == board[2][0] && board[1][1] == 1) || (board[0][2] == board[2][0] && board[0][2] == 1)) {
+        for (int i = 0; i < 3; i++) {
+            if (board[i][2 - i] == -1) {
+                board[i][2 - i] = 1;
                 return true;
             }
         }
+
     }
 
-   
-    
-    
     return false;
 }
 
@@ -779,6 +758,7 @@ void Game::run()
     bool endgameSound_played = 0;
     SDL_Event e;
     Init();
+    playmusic();
     while (!quit)
     {
 
@@ -826,7 +806,7 @@ void Game::run()
             // nếu nút restart được ấn thì khởi tạo lại toàn bộ thông số game
             if (restart)
             {
-                init(); 
+                init();
                 endgameSound_played = 0;
                 e.type = NULL;
             }
@@ -837,7 +817,7 @@ void Game::run()
                 memset(selected, -1, sizeof(selected));
                 replay = 1 - replay;
             }
-            
+
             // thực hiện chơi chỉ khi đã chơi từ vòng lặp trước hoặc đã chọn thành công chế độ chơi & bàn chơi
             if (played || (mode && boardMode))
             {
@@ -854,10 +834,15 @@ void Game::run()
                 {
                     mouseX = e.motion.x;
                     mouseY = e.motion.y;
-                    if (mouseX > 32 && mouseX < 99 && mouseY >32 && mouseY < 99)
+                    if (mouseX > 30 && mouseX < 95 && mouseY >32 && mouseY < 90)
                     {
                         replay = true;
                         Load_image(boardMode + 9, 0, 0);
+                    }if (mouseX > 120 && mouseX < 190 && mouseY >32 && mouseY < 90)
+                    {
+                        restart = true;
+                        Load_image(0, 0, 0);
+                        continue;
                     }
                 }
 
@@ -891,7 +876,7 @@ void Game::run()
                     }
                 }
             }
-            
+
             //nếu đã có winner thì render ra màn hình winner và âm thanh
             if (winner != -1)
             {

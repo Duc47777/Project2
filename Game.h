@@ -40,7 +40,7 @@ public:
     bool Checkif4();
     bool Checkif3();
     bool Checkif2();
-    bool CheckMid3();
+    bool CheckBotWin2();
     bool CheckMid5();
     
     void GameMode1(SDL_Event e, int mouseXX, int mouseYY);
