@@ -29,9 +29,8 @@ void Game::init()
 // chọn vị trí chuột để ấn trên bàn
 void Game::updateMouse(int mouseX, int mouseY)
 {
-    float X =1.0* (mouseX - ChechLechX) / DoDaiCanh;
-    float Y =1.0* (mouseY - ChechLechY) / DoDaiCanh;
-
+    float X = 1.0* (mouseX - ChechLechX) / DoDaiCanh;
+    float Y = 1.0* (mouseY - ChechLechY) / DoDaiCanh;
     if (X >= 0 && Y >= 0 && X < col && Y < row)
     {
         int temp_x = X;
@@ -173,11 +172,13 @@ void Game::SetGameMode(int x, int y)
     if (x >= 465 && x <= 775 && y >= 375 && y <= 450)
     {
         mode = 1;
+        Load_image(13, 0, 0);
         PlayMedia(0);
     }
     else if (x >= 465 && x <= 775 && y >= 495 && y <= 570)
     {
         mode = 2;
+        Load_image(13, 0, 0);
         PlayMedia(0);
     }
     else if (x >= 465 && x <= 775 && y >= 615 && y <= 690)
@@ -290,6 +291,9 @@ void Game::botPlay(int player)
     }
     if (Checkif3())
     {
+        return;
+    }
+    if (CheckifMid2()) {
         return;
     }
 
@@ -545,23 +549,23 @@ bool Game::Checkif2()
 
     }
 
-    if ((board[0][2] == board[1][1] && board[0][2] == 0) || (board[1][1] == board[2][0] && board[1][1] == 0) || (board[0][2] == board[2][0] && board[0][2] == 0)) {
-        for (int i = 0; i < 3; i++) {
-            if (board[i][2 - i] == -1) {
-                board[i][2 - i] = 1;
-                return true;
-            }
+if ((board[0][2] == board[1][1] && board[0][2] == 0) || (board[1][1] == board[2][0] && board[1][1] == 0) || (board[0][2] == board[2][0] && board[0][2] == 0)) {
+    for (int i = 0; i < 3; i++) {
+        if (board[i][2 - i] == -1) {
+            board[i][2 - i] = 1;
+            return true;
         }
-
     }
 
-    return false;
+}
+
+return false;
 }
 
 bool Game::CheckBotWin2()
 {
 
-     // Kiểm tra hàng và cột
+    // Kiểm tra hàng và cột
     for (int i = 0; i < 3; i++) {
         if ((board[i][0] == board[i][1] && board[i][0] == 1) || (board[i][1] == board[i][2] && board[i][1] == 1) || (board[i][0] == board[i][2] && board[i][0] == 1))
         {
@@ -607,6 +611,52 @@ bool Game::CheckBotWin2()
         }
 
     }
+
+    return false;
+}
+
+bool Game::CheckifMid2() {
+
+    //ngang
+    for (int i = 0; i < row; i++) {
+        for (int j = 0; j < col - 4; j++) {
+            if (board[i][j] == 0 && board[i][j] == board[i][j + 1] && board[i][j] == board[i][j + 3] && board[i][j] == board[i][j + 4] && board[i][j + 2] == -1) {
+                board[i][j + 2] = 1;
+                return true;
+            }
+        }
+    }
+
+    //doc
+    for (int i = 0; i < row - 4; i++) {
+        for (int j = 0; j < col; j++) {
+            if (board[i][j] == 0 && board[i][j] == board[i + 1][j] && board[i][j] == board[i + 3][j] && board[i][j] == board[i + 4][j] && board[i + 2][j] == -1) {
+                board[i + 2][j] = 1;
+                return true;
+            }
+        }
+    }
+
+    //cheo trai tren xuong phai duoi
+    for (int i = 0; i < row - 4; i++) {
+        for (int j = 0; j < col - 4; j++) {
+            if (board[i][j] == 0 && board[i][j] == board[i + 1][j + 1] && board[i][j] == board[i + 3][j + 3] && board[i][j] == board[i + 4][j + 4] && board[i + 2][j + 2] == -1) {
+                board[i + 2][j + 2] = 1;
+                return true;
+            }
+        }
+    }
+
+    //cheo phai tren xuong trai duoi
+    for (int i = 0; i < row - 4; i++){
+        for (int j = row - 1; j >= 4; j--) {
+            if (board[i][j] == 0 && board[i][j] == board[i + 1][j - 1] && board[i][j] == board[i + 3][j - 3] && board[i][j] == board[i + 4][j - 4] && board[i + 2][j - 2] == -1) {
+                board[i + 2][j - 2] = 1;
+                return true;
+            }
+        }
+    }
+
 
     return false;
 }
@@ -761,7 +811,7 @@ void Game::run()
     bool endgameSound_played = 0;
     SDL_Event e;
     Init();
-
+    playmusic();
     while (!quit)
     {
 
@@ -788,7 +838,7 @@ void Game::run()
                 }
 
 
-                Load_image(13, 0, 0);
+                
                 continue;
             }
 
@@ -841,7 +891,10 @@ void Game::run()
                     {
                         replay = true;
                         Load_image(boardMode + 9, 0, 0);
-                    }if (mouseX > 120 && mouseX < 190 && mouseY >32 && mouseY < 90)
+                    }
+
+                //khi ấn nút home (restart)
+                    if (mouseX > 120 && mouseX < 190 && mouseY >32 && mouseY < 90)
                     {
                         restart = true;
                         Load_image(0, 0, 0);
