@@ -19,6 +19,7 @@ TTF_Font* font = NULL;
 Mix_Music* music = NULL; // nhac background
 Mix_Chunk* SoundEffect[15];
 
+// khoi tao anh va media
 void Init()
 {
 	if (SDL_Init(SDL_INIT_VIDEO) >= 0)
@@ -133,21 +134,24 @@ void Init()
 	19:X 55
 	20:O 55
 	*/
-}
+} 
 
-void Load_image(int id, int x, int y)
+// hàm có tác dụng load các ảnh lên renderer
+void       Load_image(int id, int x, int y)
 {
 
 	SDL_Rect dest = { x, y,surface[id]->w,surface[id]->h };
 
 	SDL_RenderCopy(renderer, texture[id], NULL, &dest);
-}
+} 
 
+// chơi các file âm thanh
 void Game::PlayMedia(int a, int b)
 {
 	Mix_PlayChannel(-1, SoundEffect[a], 0, b);
 }
 
+//load các ảnh trong màn hình menu
 void Game::game_start(SDL_Event e)
 {
 		int mouseX = e.motion.x;
@@ -172,6 +176,7 @@ void Game::game_start(SDL_Event e)
 			Load_image(0, 0, 0);
 }
 
+//load các ảnh trong màn hình chọn chế độ bàn
 void Game::menu_game_mode(SDL_Event e)
 {
 	int mouseX = e.motion.x;
@@ -185,14 +190,8 @@ void Game::menu_game_mode(SDL_Event e)
 	else
 	Load_image(13, 0, 0);
 }
-void game_over(int winner)
-{
-	Load_image(winner + 7, 0, 0); // 0 la X win, 1 la O win, 2 la draw,  +7 de render anh X hoac O win
-}
-void Renderer()
-{
-	SDL_RenderPresent(renderer);
-}
+
+//load ảnh về bàn cờ lên renderer
 void Game::renderboard()//ve X hoac O len man hinh
 {
 	Load_image(boardMode + 9, 0, 0); // 9 la chenh lech giua hang so cua boardmode va anh cua no
@@ -202,7 +201,19 @@ void Game::renderboard()//ve X hoac O len man hinh
 				Load_image(board[i][j] + ChenhLechXO, j * DoDaiCanh + ChechLechX, i * DoDaiCanh + ChechLechY);
 }
 
+//load các trạng thái win
+void game_over(int winner)
+{
+	Load_image(winner + 7, 0, 0); // 0 la X win, 1 la O win, 2 la draw,  +7 de render anh X hoac O win
+}
 
+//render lên màn hình
+void Renderer()
+{
+	SDL_RenderPresent(renderer);
+}
+
+//dọn dẹp
 void close()
 {
 	for (int i = 0; i < 25;i++)
