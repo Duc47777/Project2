@@ -1,4 +1,4 @@
-#ifndef game_h_
+﻿#ifndef game_h_
 #define game_h_
 
 #include <SDL.h>
@@ -37,10 +37,13 @@ public:
 
     void botPlay(int player);
     int  minimax(int depth,int alpha, int beta, bool maximizingPlayer);
+    //hàm kiểm tra để bot chặn nước đi người chơi
     bool CheckPlayerWin2();
     bool CheckPlayerWin3();
     bool CheckPlayerWin4();
     bool CheckPlayerWinMid5();
+
+    //hàm ưu tiên nước đi của bot
     bool CheckBotWin2();
     bool CheckBotWin4();
     bool CheckBotWinMid5();
