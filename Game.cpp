@@ -273,6 +273,8 @@ void Game::botPlay(int player)
     {
         if (Checkif2())
             return;
+        if (CheckMid3())
+            return;
     }
     if (Checkif4())
     {
@@ -543,6 +545,87 @@ bool Game::Checkif2()
         
     }
 
+    return false;
+}
+
+bool Game::CheckMid3() {
+    /*
+   0
+     0
+   */
+
+    for (int i = 0; i < row - 2; i++) {
+        for (int j = 0; j < col - 1; j++) {
+            if (board[i][j] == board[i + 1][j + 1] && board[i + 1][j + 1] == 0 && board[i + 1][j] == -1) {
+                board[i + 1][j] = 1;
+                return true;
+            }
+        }
+    }
+
+    /*
+       0
+    0
+    */
+    if (board[0][1] == board[1][0] && board[0][1] == 0 && board[1][1] == -1) {
+        board[1][1] = 1;
+        return true;
+    }
+
+
+    // cheo trai sang phai
+     /*
+     0
+
+        0
+     */
+    if (board[0][0] == board[2][2] && board[0][0] == 0 && board[1][1] == -1) {
+        board[1][1] = 1;
+        return true;
+    }
+
+    // cheo phai tren xuong duoi trai
+      /*
+        0
+
+      0
+      */
+    if (board[0][2] == board[2][0] && board[0][2] == 0 && board[1][1] == -1) {
+        board[1][1] = 1;
+        return true;
+    }
+
+    //doc
+    /*
+    0
+    
+    0
+    */
+    for (int i = 0; i < row - 2; i++) {
+        for (int j = 0; j < col; j++) {
+            if (board[i][j] == board[i + 2][j] && board[i][j] == 0 && board[i + 1][j] == -1) {
+                board[i + 1][j] = 1;
+                return true;
+            }
+        }
+      }
+
+    //ngang
+    /*
+      0   0
+    */
+    for (int i = 0; i < row; i++) {
+        for (int j = 0; j < col - 2; j++) {
+            if (board[i][j] == board[i][j + 2] && board[i][j] == 0 && board[i][j + 1] == -1) {
+                board[i][j + 1] = 1;
+                return true;
+            }
+        }
+    }
+
+   
+    
+    
     return false;
 }
 
