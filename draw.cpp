@@ -37,7 +37,7 @@ void Init()
 	Mix_VolumeMusic(50);
 	
 	
-	music = Mix_LoadMUS("Music/backmusic.wav"); // nhac background
+	music = Mix_LoadMUS("Music/back.wav"); // nhac background
 	
 		SoundEffect[0] = Mix_LoadWAV("Music/PickedGameModeMusic.wav");
 		SoundEffect[1] = Mix_LoadWAV("Music/PickedBoard.wav");
@@ -45,7 +45,7 @@ void Init()
 		SoundEffect[3] = Mix_LoadWAV("Music/XO_Win.wav");
 		SoundEffect[4] = Mix_LoadWAV("Music/Draw_Win.wav");
 		for (int i = 0; i <= 4; i++) {
-		Mix_VolumeChunk(SoundEffect[i],60);
+		Mix_VolumeChunk(SoundEffect[i],60);	
 	}
 
 	
