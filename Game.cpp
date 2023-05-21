@@ -29,12 +29,15 @@ void Game::init()
 // chọn vị trí chuột để ấn trên bàn
 void Game::updateMouse(int mouseX, int mouseY)
 {
-    int X = (mouseX - ChechLechX) / DoDaiCanh;
-    int Y = (mouseY - ChechLechY) / DoDaiCanh;
+    float X =1.0* (mouseX - ChechLechX) / DoDaiCanh;
+    float Y =1.0* (mouseY - ChechLechY) / DoDaiCanh;
+
     if (X >= 0 && Y >= 0 && X < col && Y < row)
     {
-        selected[0] = X;
-        selected[1] = Y;
+        int temp_x = X;
+        int temp_y = Y;
+        selected[0] = temp_x;
+        selected[1] = temp_y;
     }
 }
 
@@ -758,7 +761,7 @@ void Game::run()
     bool endgameSound_played = 0;
     SDL_Event e;
     Init();
-    playmusic();
+
     while (!quit)
     {
 
