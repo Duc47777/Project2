@@ -277,7 +277,7 @@ void Game::botPlay(int player)
     {
         if (CheckBotWin2())
             return;
-        if (Checkif2())
+        if (CheckPlayerWin2())
             return;
         if (board[1][1] == -1)
         {
@@ -285,17 +285,28 @@ void Game::botPlay(int player)
             return;
         }
     }
-    if (Checkif4())
+    if (CheckBotWin4()) {
+        return;
+    }
+
+    if (CheckPlayerWin4())
     {
         return;
     }
-    if (Checkif3())
+
+    if (CheckPlayerWin3())
     {
         return;
     }
-    if (CheckifMid2()) {
+
+    if (CheckBotWinMid5()) {
         return;
     }
+
+    if (CheckPlayerWinMid5()) {
+        return;
+    }
+    
 
     // Thực hiện nước đi tốt nhất
     if (bestMoveX != -1 && bestMoveY != -1) {
@@ -305,7 +316,7 @@ void Game::botPlay(int player)
 }
 
 //kiểm tra xem có 4 ô nào của người chơi không, nếu có thì thực hiện chặn
-bool Game::Checkif4()
+bool Game::CheckPlayerWin4()
 {
     //ngang
     for (int i = 0; i < row; i++) {
@@ -405,7 +416,7 @@ bool Game::Checkif4()
 }
 
 //kiểm tra xem có 3 ô nào của người chơi không, nếu có thì thực hiện chặn ở 1 trong 2 đầu
-bool Game::Checkif3()
+bool Game::CheckPlayerWin3()
 {
 
     //ngang
@@ -508,7 +519,7 @@ bool Game::Checkif3()
 }
 
 //dành cho mode 3x3: kiểm tra xem có 2 ô nào chưa, nếu có thì chặn
-bool Game::Checkif2()
+bool Game::CheckPlayerWin2()
 {
     // Kiểm tra hàng và cột
     for (int i = 0; i < 3; i++) {
@@ -560,6 +571,104 @@ if ((board[0][2] == board[1][1] && board[0][2] == 0) || (board[1][1] == board[2]
 }
 
 return false;
+}
+
+bool Game::CheckBotWin4() {
+    //ngang
+    for (int i = 0; i < row; i++) {
+        for (int j = 0; j < col - 4; j++) {
+            if (board[i][j] == 1 && board[i][j] == board[i][j + 1] && board[i][j] == board[i][j + 2] && board[i][j] == board[i][j + 3] && board[i][j + 4] == -1) {
+                board[i][j + 4] = 1;
+                return true;
+            }
+        }
+    }
+
+    for (int i = 0; i < row; i++) {
+        for (int j = 1; j < col - 3; j++) {
+            if (board[i][j] == 1 && board[i][j] == board[i][j + 1] && board[i][j] == board[i][j + 2] && board[i][j] == board[i][j + 3] && board[i][j - 1] == -1) {
+                board[i][j - 1] = 1;
+                return true;
+            }
+        }
+    }
+
+    //doc
+
+    for (int i = 0; i < row - 4; i++) {
+        for (int j = 0; j < col; j++) {
+            if (board[i][j] == 1 && board[i][j] == board[i + 1][j] && board[i][j] == board[i + 2][j] && board[i][j] == board[i + 3][j] && board[i + 4][j] == -1) {
+                board[i + 4][j] = 1;
+                return true;
+            }
+        }
+    }
+
+    for (int i = 1; i < row - 3; i++) {
+        for (int j = 0; j < col; j++) {
+            if (board[i][j] == 1 && board[i][j] == board[i + 1][j] && board[i][j] == board[i + 2][j] && board[i][j] == board[i + 3][j] && board[i - 1][j] == -1) {
+                board[i - 1][j] = 1;
+                return true;
+            }
+        }
+    }
+
+
+    // Kiểm tra hàng chéo từ trên bên trái xuống dưới bên phải
+            /*
+            0
+             0
+              0
+               0
+                0
+            */
+    for (int i = 0; i < row - 4; i++) {
+        for (int j = 0; j < col - 4; j++) {
+            if (board[i][j] == 1 && board[i][j] == board[i + 1][j + 1] && board[i][j] == board[i + 2][j + 2] && board[i][j] == board[i + 3][j + 3] && board[i + 4][j + 4] == -1) {
+                board[i + 4][j + 4] = 1;
+                return true;
+            }
+        }
+    }
+
+    for (int i = 1; i < row - 3; i++) {
+        for (int j = 1; j < col - 3; j++) {
+            if (board[i][j] == 1 && board[i][j] == board[i + 1][j + 1] && board[i][j] == board[i + 2][j + 2] && board[i][j] == board[i + 3][j + 3] && board[i - 1][j - 1] == -1) {
+                board[i - 1][j - 1] = 1;
+                return true;
+            }
+        }
+    }
+
+
+    // Kiểm tra hàng chéo ngược từ trên bên phải xuống dưới bên trái
+             /*
+                 0
+                0
+               0
+              0
+             0
+             */
+
+    for (int i = 0; i < row - 4; i++) {
+        for (int j = row - 1; j >= 4; j--) {
+            if (board[i][j] == 1 && board[i][j] == board[i + 1][j - 1] && board[i][j] == board[i + 2][j - 2] && board[i][j] == board[i + 3][j - 3] && board[i + 4][j - 4] == -1) {
+                board[i + 4][j - 4] = 1;
+                return true;
+            }
+        }
+    }
+
+    for (int i = 1; i < row - 3; i++) {
+        for (int j = row - 2; j >= 3; j--) {
+            if (board[i][j] == 1 && board[i][j] == board[i + 1][j - 1] && board[i][j] == board[i + 2][j - 2] && board[i][j] == board[i + 3][j - 3] && board[i - 1][j + 1] == -1) {
+                board[i - 1][j + 1] = 1;
+                return true;
+            }
+        }
+    }
+
+    return false;
 }
 
 bool Game::CheckBotWin2()
@@ -615,7 +724,52 @@ bool Game::CheckBotWin2()
     return false;
 }
 
-bool Game::CheckifMid2() {
+bool Game::CheckBotWinMid5() {
+    //ngang
+    for (int i = 0; i < row; i++) {
+        for (int j = 0; j < col - 4; j++) {
+            if (board[i][j] == 1 && board[i][j] == board[i][j + 1] && board[i][j] == board[i][j + 3] && board[i][j] == board[i][j + 4] && board[i][j + 2] == -1) {
+                board[i][j + 2] = 1;
+                return true;
+            }
+        }
+    }
+
+    //doc
+    for (int i = 0; i < row - 4; i++) {
+        for (int j = 0; j < col; j++) {
+            if (board[i][j] == 1 && board[i][j] == board[i + 1][j] && board[i][j] == board[i + 3][j] && board[i][j] == board[i + 4][j] && board[i + 2][j] == -1) {
+                board[i + 2][j] = 1;
+                return true;
+            }
+        }
+    }
+
+    //cheo trai tren xuong phai duoi
+    for (int i = 0; i < row - 4; i++) {
+        for (int j = 0; j < col - 4; j++) {
+            if (board[i][j] == 1 && board[i][j] == board[i + 1][j + 1] && board[i][j] == board[i + 3][j + 3] && board[i][j] == board[i + 4][j + 4] && board[i + 2][j + 2] == -1) {
+                board[i + 2][j + 2] = 1;
+                return true;
+            }
+        }
+    }
+
+    //cheo phai tren xuong trai duoi
+    for (int i = 0; i < row - 4; i++) {
+        for (int j = row - 1; j >= 4; j--) {
+            if (board[i][j] == 1 && board[i][j] == board[i + 1][j - 1] && board[i][j] == board[i + 3][j - 3] && board[i][j] == board[i + 4][j - 4] && board[i + 2][j - 2] == -1) {
+                board[i + 2][j - 2] = 1;
+                return true;
+            }
+        }
+    }
+
+
+    return false;
+}
+
+bool Game::CheckPlayerWinMid5() {
 
     //ngang
     for (int i = 0; i < row; i++) {

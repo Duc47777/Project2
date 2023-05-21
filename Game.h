@@ -37,11 +37,13 @@ public:
 
     void botPlay(int player);
     int  minimax(int depth,int alpha, int beta, bool maximizingPlayer);
-    bool Checkif4();
-    bool Checkif3();
-    bool Checkif2();
+    bool CheckPlayerWin2();
+    bool CheckPlayerWin3();
+    bool CheckPlayerWin4();
+    bool CheckPlayerWinMid5();
     bool CheckBotWin2();
-    bool CheckMid5();
+    bool CheckBotWin4();
+    bool CheckBotWinMid5();
     
     void GameMode1(SDL_Event e, int mouseXX, int mouseYY);
     void GameMode2(SDL_Event e, int mouseXX, int mouseYY);
