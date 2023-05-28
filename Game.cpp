@@ -309,7 +309,8 @@ void Game::botPlay(int player)
     
 
     // Thực hiện nước đi tốt nhất
-    if (bestMoveX != -1 && bestMoveY != -1) {
+    if (bestMoveX != -1 && bestMoveY != -1)
+    {
         board[bestMoveX][bestMoveY] = player;
     }
 
@@ -770,11 +771,11 @@ bool Game::CheckBotWinMid5() {
 }
 
 bool Game::CheckPlayerWinMid5() {
-
+    
     //ngang
     for (int i = 0; i < row; i++) {
         for (int j = 0; j < col - 4; j++) {
-            if (board[i][j] == 0 && board[i][j] == board[i][j + 1] && board[i][j] == board[i][j + 3] && board[i][j] == board[i][j + 4] && board[i][j + 2] == -1) {
+            if (board[i][j] == 0 && board[i][j] == board[i][j + 1] && board[i][j] == board[i][j + 3] && board[i][j + 2] == -1) {
                 board[i][j + 2] = 1;
                 return true;
             }
@@ -784,7 +785,7 @@ bool Game::CheckPlayerWinMid5() {
     //doc
     for (int i = 0; i < row - 4; i++) {
         for (int j = 0; j < col; j++) {
-            if (board[i][j] == 0 && board[i][j] == board[i + 1][j] && board[i][j] == board[i + 3][j] && board[i][j] == board[i + 4][j] && board[i + 2][j] == -1) {
+            if (board[i][j] == 0 && board[i][j] == board[i + 1][j] && board[i][j] == board[i + 3][j] && board[i + 2][j] == -1) {
                 board[i + 2][j] = 1;
                 return true;
             }
@@ -794,7 +795,7 @@ bool Game::CheckPlayerWinMid5() {
     //cheo trai tren xuong phai duoi
     for (int i = 0; i < row - 4; i++) {
         for (int j = 0; j < col - 4; j++) {
-            if (board[i][j] == 0 && board[i][j] == board[i + 1][j + 1] && board[i][j] == board[i + 3][j + 3] && board[i][j] == board[i + 4][j + 4] && board[i + 2][j + 2] == -1) {
+            if (board[i][j] == 0 && board[i][j] == board[i + 1][j + 1] && board[i][j] == board[i + 3][j + 3] && board[i + 2][j + 2] == -1) {
                 board[i + 2][j + 2] = 1;
                 return true;
             }
@@ -804,7 +805,7 @@ bool Game::CheckPlayerWinMid5() {
     //cheo phai tren xuong trai duoi
     for (int i = 0; i < row - 4; i++){
         for (int j = row - 1; j >= 4; j--) {
-            if (board[i][j] == 0 && board[i][j] == board[i + 1][j - 1] && board[i][j] == board[i + 3][j - 3] && board[i][j] == board[i + 4][j - 4] && board[i + 2][j - 2] == -1) {
+            if (board[i][j] == 0 && board[i][j] == board[i + 1][j - 1] && board[i][j] == board[i + 3][j - 3] && board[i + 2][j - 2] == -1) {
                 board[i + 2][j - 2] = 1;
                 return true;
             }
