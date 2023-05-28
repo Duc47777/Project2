@@ -772,7 +772,7 @@ bool Game::CheckBotWinMid5() {
 
 bool Game::CheckPlayerWinMid5() {
     
-    //ngang
+    //ngang xx x
     for (int i = 0; i < row; i++) {
         for (int j = 0; j < col - 4; j++) {
             if (board[i][j] == 0 && board[i][j] == board[i][j + 1] && board[i][j] == board[i][j + 3] && board[i][j + 2] == -1) {
@@ -781,6 +781,16 @@ bool Game::CheckPlayerWinMid5() {
             }
         }
     }
+
+    for (int i = 0; i < row; i++) {
+        for (int j = 0; j < col - 4; j++) {
+            if (board[i][j] == 0 && board[i][j] == board[i][j + 2] && board[i][j] == board[i][j + 3] && board[i][j + 1] == -1) {
+                board[i][j + 1] = 1;
+                return true;
+            }
+        }
+    }
+
 
     //doc
     for (int i = 0; i < row - 4; i++) {
@@ -792,6 +802,16 @@ bool Game::CheckPlayerWinMid5() {
         }
     }
 
+    for (int i = 0; i < row - 4; i++) {
+        for (int j = 0; j < col; j++) {
+            if (board[i][j] == 0 && board[i][j] == board[i + 2][j] && board[i][j] == board[i + 3][j] && board[i + 1][j] == -1) {
+                board[i + 1][j] = 1;
+                return true;
+            }
+        }
+    }
+
+
     //cheo trai tren xuong phai duoi
     for (int i = 0; i < row - 4; i++) {
         for (int j = 0; j < col - 4; j++) {
@@ -802,11 +822,30 @@ bool Game::CheckPlayerWinMid5() {
         }
     }
 
+    for (int i = 0; i < row - 4; i++) {
+        for (int j = 0; j < col - 4; j++) {
+            if (board[i][j] == 0 && board[i][j] == board[i + 2][j + 2] && board[i][j] == board[i + 3][j + 3] && board[i + 1][j + 1] == -1) {
+                board[i + 1][j + 1] = 1;
+                return true;
+            }
+        }
+    }
+
+
     //cheo phai tren xuong trai duoi
     for (int i = 0; i < row - 4; i++){
         for (int j = row - 1; j >= 4; j--) {
             if (board[i][j] == 0 && board[i][j] == board[i + 1][j - 1] && board[i][j] == board[i + 3][j - 3] && board[i + 2][j - 2] == -1) {
                 board[i + 2][j - 2] = 1;
+                return true;
+            }
+        }
+    }
+
+    for (int i = 0; i < row - 4; i++) {
+        for (int j = row - 1; j >= 4; j--) {
+            if (board[i][j] == 0 && board[i][j] == board[i + 2][j - 2] && board[i][j] == board[i + 3][j - 3] && board[i + 1][j - 1] == -1) {
+                board[i + 1][j - 1] = 1;
                 return true;
             }
         }
