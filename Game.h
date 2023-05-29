@@ -23,6 +23,7 @@ class Game
     int ChenhLechXO=0;
     float DoDaiCanh = 0;
     int ChechLechX = 0, ChechLechY = 0;
+    int MoveListFor_Ctrl_Z[2][2] = { -1,-1,-1,-1 };
 
 public:
     void init();
@@ -34,6 +35,8 @@ public:
     void setBoardMode(int x, int y);
     void ApplyBoardMode();
     void PlayMedia(int a, int b=1);
+    void Insert_MoveList(int x, int y);
+    void Do_Ctrl_Z();
 
     void botPlay(int player);
     int  minimax(int depth,int alpha, int beta, bool maximizingPlayer);
