@@ -285,6 +285,15 @@ void Game::botPlay(int player)
             return;
         }
     }
+
+    if (CheckBotWinMid5()) {
+        return;
+    }
+
+    if (CheckPlayerWinMid5()) {
+        return;
+    }
+
     if (CheckBotWin4()) {
         return;
     }
@@ -298,15 +307,6 @@ void Game::botPlay(int player)
     {
         return;
     }
-
-    if (CheckBotWinMid5()) {
-        return;
-    }
-
-    if (CheckPlayerWinMid5()) {
-        return;
-    }
-    
 
     // Thực hiện nước đi tốt nhất
     if (bestMoveX != -1 && bestMoveY != -1)
@@ -936,8 +936,6 @@ void Game::Insert_MoveList(int y, int x)
     MoveListFor_Ctrl_Z[0][1] = MoveListFor_Ctrl_Z[1][1];
     MoveListFor_Ctrl_Z[1][0] = y;
     MoveListFor_Ctrl_Z[1][1] = x;
-    cout << player << endl;
-    cout << MoveListFor_Ctrl_Z[0][0] << " " << MoveListFor_Ctrl_Z[0][1] << endl << MoveListFor_Ctrl_Z[1][0] << " " << MoveListFor_Ctrl_Z[1][1] << endl << endl;
 }
 
 void Game::Do_Ctrl_Z()
@@ -951,9 +949,7 @@ void Game::Do_Ctrl_Z()
         MoveListFor_Ctrl_Z[1][1] = MoveListFor_Ctrl_Z[0][1];
         MoveListFor_Ctrl_Z[0][0] = -1;
         player--;
-        cout << MoveListFor_Ctrl_Z[0][0] << " " << MoveListFor_Ctrl_Z[0][1] << endl << MoveListFor_Ctrl_Z[1][0] << " " << MoveListFor_Ctrl_Z[1][1] << endl << endl;
     }
-
 }
 
 // chế độ pvbot
@@ -981,7 +977,6 @@ void Game::GameMode1(SDL_Event e, int mouseXX, int mouseYY)
                         player++;
                     }
                 }
-
             }
         }
         else
@@ -1137,14 +1132,18 @@ void Game::run()
                     }
                 }
 
-                if (e.type == SDL_KEYDOWN)
+                //khi ấn nút chơi lại 1 nước
+                if (e.type == SDL_MOUSEBUTTONDOWN)
                 {
-                    if (e.key.keysym.sym == SDLK_z)
+                    mouseX = e.button.x;
+                    mouseY = e.button.y;
+                    if (mouseX >= 28 && mouseX <= 88 && mouseY >= 98 && mouseY <= 158)
                     {
-                        cout << "z pressed" << endl << player << endl;
                         Do_Ctrl_Z();
                     }
+
                 }
+
                 //nhận vào input lúc chơi game và khi chưa có người thắng
                 if (winner == -1 && boardMode)
                 {
