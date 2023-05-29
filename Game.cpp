@@ -791,7 +791,6 @@ bool Game::CheckPlayerWinMid5() {
         }
     }
 
-
     //doc
     for (int i = 0; i < row - 4; i++) {
         for (int j = 0; j < col; j++) {
@@ -850,7 +849,6 @@ bool Game::CheckPlayerWinMid5() {
             }
         }
     }
-
 
     return false;
 }
@@ -931,12 +929,39 @@ int Game::minimax(int depth, int alpha, int beta, bool maximizingPlayer) {
     }
 }  // Hàm Minimax với cắt tỉa Alpha-Beta để tìm nước đi tốt nhất
 
+
+void Game::Insert_MoveList(int y, int x)
+{
+    MoveListFor_Ctrl_Z[0][0] = MoveListFor_Ctrl_Z[1][0];
+    MoveListFor_Ctrl_Z[0][1] = MoveListFor_Ctrl_Z[1][1];
+    MoveListFor_Ctrl_Z[1][0] = y;
+    MoveListFor_Ctrl_Z[1][1] = x;
+    cout << player << endl;
+    cout << MoveListFor_Ctrl_Z[0][0] << " " << MoveListFor_Ctrl_Z[0][1] << endl << MoveListFor_Ctrl_Z[1][0] << " " << MoveListFor_Ctrl_Z[1][1] << endl << endl;
+}
+
+void Game::Do_Ctrl_Z()
+{
+    if (MoveListFor_Ctrl_Z[1][0] != -1)
+    {
+        int YY = MoveListFor_Ctrl_Z[1][0];
+        int XX = MoveListFor_Ctrl_Z[1][1];
+        board[YY][XX] = -1;
+        MoveListFor_Ctrl_Z[1][0] = MoveListFor_Ctrl_Z[0][0];
+        MoveListFor_Ctrl_Z[1][1] = MoveListFor_Ctrl_Z[0][1];
+        MoveListFor_Ctrl_Z[0][0] = -1;
+        player--;
+        cout << MoveListFor_Ctrl_Z[0][0] << " " << MoveListFor_Ctrl_Z[0][1] << endl << MoveListFor_Ctrl_Z[1][0] << " " << MoveListFor_Ctrl_Z[1][1] << endl << endl;
+    }
+
+}
+
 // chế độ pvbot
 void Game::GameMode1(SDL_Event e, int mouseXX, int mouseYY)
 {
     if (winner == -1 && played)
     {
-        if (player == 0)
+        if (player % 2 == 0)
         {
             if (e.type == SDL_MOUSEBUTTONDOWN)
             {
@@ -951,9 +976,9 @@ void Game::GameMode1(SDL_Event e, int mouseXX, int mouseYY)
                     selected[0] = -1;
                     if (board[X][Y] == -1)
                     {
-                        board[X][Y] = player;
+                        board[X][Y] = player % 2;
                         PlayMedia(2);
-                        player = 1 - player;
+                        player++;
                     }
                 }
 
@@ -961,9 +986,9 @@ void Game::GameMode1(SDL_Event e, int mouseXX, int mouseYY)
         }
         else
         {
-            botPlay(player);
+            botPlay(player % 2);
             PlayMedia(2);
-            player = 1 - player;
+            player++ ;
         }
         renderboard();
         winner = game_state();
@@ -983,14 +1008,15 @@ void Game::GameMode2(SDL_Event e, int mouseXX, int mouseYY)
 
         if (selected[0] != -1)
         {
-            int Y = selected[0];
-            int X = selected[1];
+            int X = selected[0];
+            int Y = selected[1];
             selected[0] = -1;
-            if (board[X][Y] == -1)
+            if (board[Y][X] == -1)
             {
-                board[X][Y] = player;
+                Insert_MoveList(Y, X);
+                board[Y][X] = player % 2;
                 PlayMedia(2);
-                player = 1 - player;
+                player++;
             }
         }
     }
@@ -1062,6 +1088,7 @@ void Game::run()
             {
                 memset(board, -1, sizeof(board));
                 memset(selected, -1, sizeof(selected));
+                player = 0;
                 replay = 1 - replay;
             }
 
@@ -1110,6 +1137,14 @@ void Game::run()
                     }
                 }
 
+                if (e.type == SDL_KEYDOWN)
+                {
+                    if (e.key.keysym.sym == SDLK_z)
+                    {
+                        cout << "z pressed" << endl << player << endl;
+                        Do_Ctrl_Z();
+                    }
+                }
                 //nhận vào input lúc chơi game và khi chưa có người thắng
                 if (winner == -1 && boardMode)
                 {
