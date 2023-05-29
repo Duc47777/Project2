@@ -285,6 +285,12 @@ void Game::botPlay(int player)
             return;
         }
     }
+    if (CheckBotWinMid5()) {
+        return;
+    }
+    if (CheckPlayerWinMid5()) {
+        return;
+    }
     if (CheckBotWin4()) {
         return;
     }
@@ -299,13 +305,7 @@ void Game::botPlay(int player)
         return;
     }
 
-    if (CheckBotWinMid5()) {
-        return;
-    }
-
-    if (CheckPlayerWinMid5()) {
-        return;
-    }
+    
     
 
     // Thực hiện nước đi tốt nhất
