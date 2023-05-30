@@ -1027,7 +1027,6 @@ void Game::GameMode1(SDL_Event e, int mouseXX, int mouseYY)
 
     if (winner == -1 && played)
     {
-        cout << MoveListFor_Ctrl_Z[0][0] << " " << MoveListFor_Ctrl_Z[0][1] << endl << MoveListFor_Ctrl_Z[1][0] << " " << MoveListFor_Ctrl_Z[1][1] << endl << endl;
         if (player % 2 == 0)
         {
             if (e.type == SDL_MOUSEBUTTONDOWN)
@@ -1056,7 +1055,6 @@ void Game::GameMode1(SDL_Event e, int mouseXX, int mouseYY)
             botPlay(player % 2);
             PlayMedia(2);
             player++;
-            cout << MoveListFor_Ctrl_Z[0][0] << " " << MoveListFor_Ctrl_Z[0][1] << endl << MoveListFor_Ctrl_Z[1][0] << " " << MoveListFor_Ctrl_Z[1][1] << endl << endl;
         }
         renderboard();
         winner = game_state();
