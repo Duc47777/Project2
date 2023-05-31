@@ -24,7 +24,7 @@ void Init()
 {
 	if (SDL_Init(SDL_INIT_VIDEO) >= 0)
 	{
-		window = SDL_CreateWindow("Tic Tac Toe", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+		window = SDL_CreateWindow("Caro", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
 		if (window != NULL)
 		{
 			renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
@@ -34,7 +34,7 @@ void Init()
 	}
 	
 	Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 4096);
-	Mix_VolumeMusic(50);
+	Mix_VolumeMusic(18);
 	
 	
 	music = Mix_LoadMUS("Music/back.wav"); // nhac background
@@ -45,7 +45,7 @@ void Init()
 		SoundEffect[3] = Mix_LoadWAV("Music/XO_Win.wav");
 		SoundEffect[4] = Mix_LoadWAV("Music/Draw_Win.wav");
 		for (int i = 0; i <= 4; i++) {
-		Mix_VolumeChunk(SoundEffect[i],60);	
+		Mix_VolumeChunk(SoundEffect[i],30);	
 	}
 
 	

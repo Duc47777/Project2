@@ -765,8 +765,8 @@ bool Game::CheckBotWin2()
 
 bool Game::CheckBotWinMid5() {
     //ngang
-    for (int i = 0; i < row; i++) {
-        for (int j = 0; j < col - 4; j++) {
+    for (int i = 0; i <= row; i++) {
+        for (int j = 0; j <= col - 4; j++) {
             if (board[i][j] == 1 && board[i][j] == board[i][j + 1] && board[i][j] == board[i][j + 3] && board[i][j] == board[i][j + 4] && board[i][j + 2] == -1) {
                 Insert_MoveList(i, j+2);// thêm các nước đi đã thực hiện vào bảng để lưu 
                 board[i][j + 2] = 1;
@@ -776,8 +776,8 @@ bool Game::CheckBotWinMid5() {
     }
 
     //doc
-    for (int i = 0; i < row - 4; i++) {
-        for (int j = 0; j < col; j++) {
+    for (int i = 0; i <= row - 4; i++) {
+        for (int j = 0; j <= col; j++) {
             if (board[i][j] == 1 && board[i][j] == board[i + 1][j] && board[i][j] == board[i + 3][j] && board[i][j] == board[i + 4][j] && board[i + 2][j] == -1) {
                 Insert_MoveList(i+2, j);// thêm các nước đi đã thực hiện vào bảng để lưu 
                 board[i + 2][j] = 1;
@@ -787,8 +787,8 @@ bool Game::CheckBotWinMid5() {
     }
 
     //cheo trai tren xuong phai duoi
-    for (int i = 0; i < row - 4; i++) {
-        for (int j = 0; j < col - 4; j++) {
+    for (int i = 0; i <= row - 4; i++) {
+        for (int j = 0; j <= col - 4; j++) {
             if (board[i][j] == 1 && board[i][j] == board[i + 1][j + 1] && board[i][j] == board[i + 3][j + 3] && board[i][j] == board[i + 4][j + 4] && board[i + 2][j + 2] == -1) {
                 Insert_MoveList(i+2, j+2);// thêm các nước đi đã thực hiện vào bảng để lưu 
                 board[i + 2][j + 2] = 1;
@@ -798,8 +798,8 @@ bool Game::CheckBotWinMid5() {
     }
 
     //cheo phai tren xuong trai duoi
-    for (int i = 0; i < row - 4; i++) {
-        for (int j = row - 1; j >= 4; j--) {
+    for (int i = 0; i <= row - 4; i++) {
+        for (int j = row - 1; j >= 3; j--) {
             if (board[i][j] == 1 && board[i][j] == board[i + 1][j - 1] && board[i][j] == board[i + 3][j - 3] && board[i][j] == board[i + 4][j - 4] && board[i + 2][j - 2] == -1) 
             {
                 Insert_MoveList(i+2, j-2);// thêm các nước đi đã thực hiện vào bảng để lưu 
@@ -1027,7 +1027,7 @@ void Game::GameMode1(SDL_Event e, int mouseXX, int mouseYY)
 
     if (winner == -1 && played)
     {
-        cout << MoveListFor_Ctrl_Z[0][0] << " " << MoveListFor_Ctrl_Z[0][1] << endl << MoveListFor_Ctrl_Z[1][0] << " " << MoveListFor_Ctrl_Z[1][1] << endl << endl;
+      
         if (player % 2 == 0)
         {
             if (e.type == SDL_MOUSEBUTTONDOWN)
@@ -1056,7 +1056,7 @@ void Game::GameMode1(SDL_Event e, int mouseXX, int mouseYY)
             botPlay(player % 2);
             PlayMedia(2);
             player++;
-            cout << MoveListFor_Ctrl_Z[0][0] << " " << MoveListFor_Ctrl_Z[0][1] << endl << MoveListFor_Ctrl_Z[1][0] << " " << MoveListFor_Ctrl_Z[1][1] << endl << endl;
+      
         }
         renderboard();
         winner = game_state();
