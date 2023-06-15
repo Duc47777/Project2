@@ -44,12 +44,12 @@ void Game::updateMouse(int mouseX, int mouseY)
 int Game::game_state()
 {
     //check draw
-    if (boardMode == 1)
+    if (boardMode == 1) //3x3
     {
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < 1; i++)
             if (board[i][1] == board[i][0] && board[i][0] == board[i][2] && board[i][0] != -1)
                 return board[i][0];
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < 1; i++)
             if (board[0][i] == board[1][i] && board[0][i] == board[2][i] && board[0][i] != -1)
                 return board[0][i];
         if (board[1][1] == board[0][0] && board[0][0] == board[2][2] && board[0][0] != -1)
@@ -69,6 +69,7 @@ int Game::game_state()
 
 
     }
+    // 5x5 , 10x15
     for (int i = 0; i < row; i++)
     {
         for (int j = 0; j < col - 4; j++)
@@ -194,12 +195,12 @@ void Game::setBoardMode(int x, int y)
 {
     if (x >= 0 && x < 867 && y >= 260 && y <= 840)
     {
-        boardMode = 1; // impossible
+        boardMode = 1; // normal
         PlayMedia(1);
     }
     else if (x >= 867 && x <= 1240 && y >= 260 && y < 622)
     {
-        boardMode = 2; // normal
+        boardMode = 2; // hard
         PlayMedia(1);
     }
     else if (x >= 867 && x <= 1240 && y >= 622 && y <= 840)
@@ -1125,8 +1126,6 @@ void Game::run()
                     break;
                 }
 
-
-                
                 continue;
             }
 
@@ -1182,7 +1181,7 @@ void Game::run()
                         Load_image(boardMode + 9, 0, 0);
                     }
 
-                //khi ấn nút home (restart)
+                //khi ấn nút home 
                     if (mouseX > 120 && mouseX < 190 && mouseY >32 && mouseY < 90)
                     {
                         restart = true;
@@ -1191,7 +1190,7 @@ void Game::run()
                     }
                 }
 
-                //khi ấn nút restart 
+                //khi ấn nút again
                 if (winner != -1 && e.type == SDL_MOUSEBUTTONDOWN)
                 {
 
